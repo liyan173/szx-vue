@@ -1,41 +1,41 @@
 <template>
   <div class="p-2">
-    <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">
-      <div v-show="showSearch" class="mb-[10px]">
-        <el-card shadow="hover">
-          <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-            <el-form-item label="网点类型" prop="siteType">
-              <el-input v-model="queryParams.siteType" placeholder="请输入网点类型" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="用户类型" prop="userType">
-              <el-select v-model="queryParams.userType" placeholder="请选择用户类型" clearable >
-                <el-option v-for="dict in user_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属区域" prop="region">
-              <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >
-                <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="详细地址" prop="address">
-              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="联系人" prop="contactPerson">
-              <el-select v-model="queryParams.contactPerson" placeholder="请选择联系人" clearable >
-                <el-option v-for="dict in linkman_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="联系电话" prop="contactPhone">
-              <el-input v-model="queryParams.contactPhone" placeholder="请输入联系电话" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-              <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </div>
-    </transition>
+<!--    <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">-->
+<!--      <div v-show="showSearch" class="mb-[10px]">-->
+<!--        <el-card shadow="hover">-->
+<!--          <el-form ref="queryFormRef" :model="queryParams" :inline="true">-->
+<!--            <el-form-item label="网点类型" prop="siteType">-->
+<!--              <el-input v-model="queryParams.siteType" placeholder="请输入网点类型" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="用户类型" prop="userType">-->
+<!--              <el-select v-model="queryParams.userType" placeholder="请选择用户类型" clearable >-->
+<!--                <el-option v-for="dict in user_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="所属区域" prop="region">-->
+<!--              <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >-->
+<!--                <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="详细地址" prop="address">-->
+<!--              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="联系人" prop="contactPerson">-->
+<!--              <el-select v-model="queryParams.contactPerson" placeholder="请选择联系人" clearable >-->
+<!--                <el-option v-for="dict in linkman_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="联系电话" prop="contactPhone">-->
+<!--              <el-input v-model="queryParams.contactPhone" placeholder="请输入联系电话" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item>-->
+<!--              <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>-->
+<!--              <el-button icon="Refresh" @click="resetQuery">重置</el-button>-->
+<!--            </el-form-item>-->
+<!--          </el-form>-->
+<!--        </el-card>-->
+<!--      </div>-->
+<!--    </transition>-->
 
     <el-card shadow="never">
       <template #header>
@@ -107,16 +107,20 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="所属区域" prop="region">
-          <el-select v-model="form.region" placeholder="请选择所属区域">
-            <el-option
-                v-for="dict in area_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
+          <el-cascader
+            v-model="form.region"
+            :options="areaOptions"
+            :props="cascaderProps"
+            placeholder="请选择省/市/区"
+            clearable
+            filterable
+          ></el-cascader>
         </el-form-item>
+
+
+
         <el-form-item label="详细地址" prop="address">
           <el-input v-model="form.address" placeholder="请输入详细地址" />
         </el-form-item>
@@ -147,9 +151,50 @@
 <script setup name="Site" lang="ts">
 import { listSite, getSite, delSite, addSite, updateSite } from '@/api/ck/site';
 import { SiteVO, SiteQuery, SiteForm } from '@/api/ck/site/types';
+import areaData from '@/utils/cnarea_2023.json';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { linkman_type, user_type, area_type } = toRefs<any>(proxy?.useDict('linkman_type', 'user_type', 'area_type'));
+
+// Cascader 配置
+const cascaderProps = {
+  value: 'area_code',
+  label: 'name',
+  children: 'children'
+};
+
+// 构建三级联动数据结构
+const areaOptions = computed(() => {
+  // 获取所有省级数据（level === '1'）
+  const provinces = areaData.filter(item => item.level === '1');
+
+  return provinces.map(province => {
+    // 获取该省下的所有市级数据（level === '2'）
+    const cities = areaData.filter(item =>
+      item.level === '2' && item.parent_code === province.area_code
+    );
+
+    return {
+      area_code: province.area_code,
+      name: province.name,
+      children: cities.map(city => {
+        // 获取该市下的所有区县数据（level === '3'）
+        const districts = areaData.filter(item =>
+          item.level === '3' && item.parent_code === city.area_code
+        );
+
+        return {
+          area_code: city.area_code,
+          name: city.name,
+          children: districts.map(district => ({
+            area_code: district.area_code,
+            name: district.name
+          }))
+        };
+      })
+    };
+  });
+});
 
 const siteList = ref<SiteVO[]>([]);
 const buttonLoading = ref(false);
