@@ -153,11 +153,18 @@
             <dict-tag :options="warehouse_method_type" :value="scope.row.manageType"/>
           </template>
         </el-table-column>
+<!--        <el-table-column label="所属区域" align="center" prop="region">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="area_type" :value="scope.row.region"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="所属区域" align="center" prop="region">
           <template #default="scope">
-            <dict-tag :options="area_type" :value="scope.row.region"/>
+            {{ getAreaName(scope.row.region) }}
           </template>
         </el-table-column>
+
+
         <el-table-column label="详细地址" align="center" prop="address" />
 <!--        <el-table-column label="主要品类" align="center" prop="mainCategory">-->
 <!--          <template #default="scope">-->
@@ -275,16 +282,28 @@
             ></el-option>
           </el-select>
         </el-form-item>
+<!--        <el-form-item label="所属区域" prop="region">-->
+<!--          <el-select v-model="form.region" placeholder="请选择所属区域">-->
+<!--            <el-option-->
+<!--                v-for="dict in area_type"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.label"-->
+<!--                :value="dict.value"-->
+<!--            ></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+
         <el-form-item label="所属区域" prop="region">
-          <el-select v-model="form.region" placeholder="请选择所属区域">
-            <el-option
-                v-for="dict in area_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
+          <el-cascader
+            v-model="form.region"
+            :options="areaOptions"
+            :props="cascaderProps"
+            placeholder="请选择省/市/区"
+            clearable
+            filterable
+          ></el-cascader>
         </el-form-item>
+
         <el-form-item label="详细地址" prop="address">
           <el-input v-model="form.address" placeholder="请输入详细地址" />
         </el-form-item>
@@ -379,7 +398,7 @@
 <script setup name="Warehouse" lang="ts">
 import { listWarehouse, getWarehouse, delWarehouse, addWarehouse, updateWarehouse } from '@/api/ck/warehouse';
 import { WarehouseVO, WarehouseQuery, WarehouseForm } from '@/api/ck/warehouse/types';
-
+import areaData from '@/utils/cnarea_2023.json';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { advantage_type, security_info_type, function_info_type, age_limit_type, warehouse_method_type, category_type, landt_ypes, area_type, outer_facilities_type, integrated_facilities_type, authentication_state_type} = toRefs<any>(proxy?.useDict('advantage_type', 'security_info_type', 'function_info_type', 'age_limit_type', 'warehouse_method_type', 'category_type', 'landt_ypes', 'area_type', 'outer_facilities_type', 'integrated_facilities_type','authentication_state_type'));
 
@@ -395,6 +414,47 @@ const dateRange = ref<[DateModelType, DateModelType]>(['', '']);
 
 const queryFormRef = ref<ElFormInstance>();
 const warehouseFormRef = ref<ElFormInstance>();
+
+// Cascader 配置
+const cascaderProps = {
+  value: 'area_code',
+  label: 'name',
+  children: 'children'
+};
+
+// 构建三级联动数据结构
+const areaOptions = computed(() => {
+  // 获取所有省级数据（level === '1'）
+  const provinces = areaData.filter(item => item.level === '1');
+
+  return provinces.map(province => {
+    // 获取该省下的所有市级数据（level === '2'）
+    const cities = areaData.filter(item =>
+      item.level === '2' && item.parent_code === province.area_code
+    );
+
+    return {
+      area_code: province.area_code,
+      name: province.name,
+      children: cities.map(city => {
+        // 获取该市下的所有区县数据（level === '3'）
+        const districts = areaData.filter(item =>
+          item.level === '3' && item.parent_code === city.area_code
+        );
+
+        return {
+          area_code: city.area_code,
+          name: city.name,
+          children: districts.map(district => ({
+            area_code: district.area_code,
+            name: district.name
+          }))
+        };
+      })
+    };
+  });
+});
+
 
 const dialog = reactive<DialogOption>({
   visible: false,
@@ -500,6 +560,32 @@ const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+/** 根据区域代码数组获取区域名称 */
+const getAreaName = (regionCodes: string[] | string) => {
+  if (!regionCodes || (Array.isArray(regionCodes) && regionCodes.length === 0)) {
+    return '-';
+  }
+
+  // 如果是数组，转换为区域名称路径
+  if (Array.isArray(regionCodes)) {
+    const names: string[] = [];
+
+    regionCodes.forEach(code => {
+      const area = areaData.find(item => item.area_code === code);
+      if (area) {
+        names.push(area.name);
+      }
+    });
+
+    return names.join(' / ');
+  }
+
+  // 如果是单个字符串代码
+  const area = areaData.find(item => item.area_code === regionCodes);
+  return area ? area.name : regionCodes;
+};
+
 
 /** 查询仓库基础数据录入列表 */
 const getList = async () => {
