@@ -386,6 +386,7 @@ const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
+const dateRange = ref<[DateModelType, DateModelType]>(['', '']);
 
 const queryFormRef = ref<ElFormInstance>();
 const warehouseFormRef = ref<ElFormInstance>();
@@ -496,7 +497,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询仓库基础数据录入列表 */
 const getList = async () => {
   loading.value = true;
-  const res = await listWarehouse(queryParams.value);
+  const res = await listWarehouse(proxy?.addDateRange(queryParams.value, dateRange.value));
   warehouseList.value = res.rows;
   total.value = res.total;
   loading.value = false;
@@ -523,6 +524,7 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value?.resetFields();
+  dateRange.value = ['', ''];
   handleQuery();
 }
 
@@ -584,6 +586,7 @@ const handleExport = () => {
 }
 
 onMounted(() => {
+  dateRange.value = ['', ''];
   getList();
 });
 </script>
