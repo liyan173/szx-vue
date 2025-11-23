@@ -116,6 +116,10 @@ export interface WarehouseVO {
    * 各类仓库面积
    */
   warehouseAreaInfo: string;
+  /**
+   * 认证状态
+   */
+  authenticationState: string;
 
 }
 
@@ -229,6 +233,10 @@ export interface WarehouseForm extends BaseEntity {
    * 各类仓库面积
    */
   warehouseAreaInfo?: string;
+  /**
+   * 认证状态
+   */
+  authenticationState: string;
 
 }
 
@@ -343,4 +351,9 @@ export interface WarehouseQuery extends PageQuery {
    * 日期范围参数
    */
   params?: any;
+
+  /**
+   * 认证状态
+   */
+  authenticationState: string;
 }

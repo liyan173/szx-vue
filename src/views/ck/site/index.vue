@@ -7,6 +7,11 @@
             <el-form-item label="网点类型" prop="siteType">
               <el-input v-model="queryParams.siteType" placeholder="请输入网点类型" clearable @keyup.enter="handleQuery" />
             </el-form-item>
+            <el-form-item label="用户类型" prop="userType">
+              <el-select v-model="queryParams.userType" placeholder="请选择用户类型" clearable >
+                <el-option v-for="dict in user_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+              </el-select>
+            </el-form-item>
             <el-form-item label="所属区域" prop="region">
               <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >
                 <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
@@ -55,7 +60,11 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
         <el-table-column label="网点类型" align="center" prop="siteType" />
-        <el-table-column label="用户类型" align="center" prop="userType" />
+        <el-table-column label="用户类型" align="center" prop="userType">
+          <template #default="scope">
+            <dict-tag :options="user_type" :value="scope.row.userType"/>
+          </template>
+        </el-table-column>
         <el-table-column label="所属区域" align="center" prop="region">
           <template #default="scope">
             <dict-tag :options="area_type" :value="scope.row.region"/>
@@ -87,6 +96,16 @@
       <el-form ref="siteFormRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="网点类型" prop="siteType">
           <el-input v-model="form.siteType" placeholder="请输入网点类型" />
+        </el-form-item>
+        <el-form-item label="用户类型" prop="userType">
+          <el-select v-model="form.userType" placeholder="请选择用户类型">
+            <el-option
+                v-for="dict in user_type"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="所属区域" prop="region">
           <el-select v-model="form.region" placeholder="请选择所属区域">
@@ -130,7 +149,7 @@ import { listSite, getSite, delSite, addSite, updateSite } from '@/api/ck/site';
 import { SiteVO, SiteQuery, SiteForm } from '@/api/ck/site/types';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { linkman_type, area_type } = toRefs<any>(proxy?.useDict('linkman_type', 'area_type'));
+const { linkman_type, user_type, area_type } = toRefs<any>(proxy?.useDict('linkman_type', 'user_type', 'area_type'));
 
 const siteList = ref<SiteVO[]>([]);
 const buttonLoading = ref(false);

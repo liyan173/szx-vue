@@ -4,87 +4,102 @@
       <div v-show="showSearch" class="mb-[10px]">
         <el-card shadow="hover">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-            <el-form-item label="仓库名称" prop="warehouseName">
-              <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="占地(亩)" prop="areaMu">
-              <el-input v-model="queryParams.areaMu" placeholder="请输入占地(亩)" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="土地属性" prop="landProperty">
-              <el-select v-model="queryParams.landProperty" placeholder="请选择土地属性" clearable >
-                <el-option v-for="dict in landt_ypes" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="使用年限" prop="useYears">
-              <el-select v-model="queryParams.useYears" placeholder="请选择使用年限" clearable >
-                <el-option v-for="dict in age_limit_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="楼栋数量" prop="buildingCount">
-              <el-input v-model="queryParams.buildingCount" placeholder="请输入楼栋数量" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="容积率" prop="volumeRatio">
-              <el-input v-model="queryParams.volumeRatio" placeholder="请输入容积率" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="层高" prop="floorHeight">
-              <el-input v-model="queryParams.floorHeight" placeholder="请输入层高" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="仓库总面积" prop="totalArea">
-              <el-input v-model="queryParams.totalArea" placeholder="请输入仓库总面积" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="仓库管理方式" prop="manageType">
-              <el-select v-model="queryParams.manageType" placeholder="请选择仓库管理方式" clearable >
-                <el-option v-for="dict in warehouse_method_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属区域" prop="region">
-              <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >
-                <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="详细地址" prop="address">
-              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="主要品类" prop="mainCategory">
-              <el-select v-model="queryParams.mainCategory" placeholder="请选择主要品类" clearable >
-                <el-option v-for="dict in category_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="仓库内配套" prop="innerFacilities">
-              <el-select v-model="queryParams.innerFacilities" placeholder="请选择仓库内配套" clearable >
-                <el-option v-for="dict in integrated_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="仓库外配套" prop="outerFacilities">
-              <el-select v-model="queryParams.outerFacilities" placeholder="请选择仓库外配套" clearable >
-                <el-option v-for="dict in outer_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="园区安保" prop="securityInfo">
-              <el-select v-model="queryParams.securityInfo" placeholder="请选择园区安保" clearable >
-                <el-option v-for="dict in security_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="仓库优势" prop="advantage">
-              <el-select v-model="queryParams.advantage" placeholder="请选择仓库优势" clearable >
-                <el-option v-for="dict in advantage_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="仓库功能" prop="functionInfo">
-              <el-select v-model="queryParams.functionInfo" placeholder="请选择仓库功能" clearable >
-                <el-option v-for="dict in function_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="消防证书有效日期" prop="fireExpireDate">
-              <el-date-picker clearable
-                v-model="queryParams.fireExpireDate"
-                type="date"
+<!--            <el-form-item label="仓库名称" prop="warehouseName">-->
+<!--              <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="占地(亩)" prop="areaMu">-->
+<!--              <el-input v-model="queryParams.areaMu" placeholder="请输入占地(亩)" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="土地属性" prop="landProperty">-->
+<!--              <el-select v-model="queryParams.landProperty" placeholder="请选择土地属性" clearable >-->
+<!--                <el-option v-for="dict in landt_ypes" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="使用年限" prop="useYears">-->
+<!--              <el-select v-model="queryParams.useYears" placeholder="请选择使用年限" clearable >-->
+<!--                <el-option v-for="dict in age_limit_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="楼栋数量" prop="buildingCount">-->
+<!--              <el-input v-model="queryParams.buildingCount" placeholder="请输入楼栋数量" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="容积率" prop="volumeRatio">-->
+<!--              <el-input v-model="queryParams.volumeRatio" placeholder="请输入容积率" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="层高" prop="floorHeight">-->
+<!--              <el-input v-model="queryParams.floorHeight" placeholder="请输入层高" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库总面积" prop="totalArea">-->
+<!--              <el-input v-model="queryParams.totalArea" placeholder="请输入仓库总面积" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库管理方式" prop="manageType">-->
+<!--              <el-select v-model="queryParams.manageType" placeholder="请选择仓库管理方式" clearable >-->
+<!--                <el-option v-for="dict in warehouse_method_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="所属区域" prop="region">-->
+<!--              <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >-->
+<!--                <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="详细地址" prop="address">-->
+<!--              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="主要品类" prop="mainCategory">-->
+<!--              <el-select v-model="queryParams.mainCategory" placeholder="请选择主要品类" clearable >-->
+<!--                <el-option v-for="dict in category_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库内配套" prop="innerFacilities">-->
+<!--              <el-select v-model="queryParams.innerFacilities" placeholder="请选择仓库内配套" clearable >-->
+<!--                <el-option v-for="dict in integrated_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库外配套" prop="outerFacilities">-->
+<!--              <el-select v-model="queryParams.outerFacilities" placeholder="请选择仓库外配套" clearable >-->
+<!--                <el-option v-for="dict in outer_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="园区安保" prop="securityInfo">-->
+<!--              <el-select v-model="queryParams.securityInfo" placeholder="请选择园区安保" clearable >-->
+<!--                <el-option v-for="dict in security_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库优势" prop="advantage">-->
+<!--              <el-select v-model="queryParams.advantage" placeholder="请选择仓库优势" clearable >-->
+<!--                <el-option v-for="dict in advantage_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="仓库功能" prop="functionInfo">-->
+<!--              <el-select v-model="queryParams.functionInfo" placeholder="请选择仓库功能" clearable >-->
+<!--                <el-option v-for="dict in function_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="消防证书有效日期" prop="fireExpireDate">-->
+<!--              <el-date-picker clearable-->
+<!--                v-model="queryParams.fireExpireDate"-->
+<!--                type="date"-->
+<!--                value-format="YYYY-MM-DD"-->
+<!--                placeholder="请选择消防证书有效日期"-->
+<!--              />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="各类仓库面积" prop="warehouseAreaInfo">-->
+<!--              <el-input v-model="queryParams.warehouseAreaInfo" placeholder="请输入各类仓库面积" clearable @keyup.enter="handleQuery" />-->
+<!--            </el-form-item>-->
+            <el-form-item label="提交日期" style="width: 308px">
+              <el-date-picker
+                v-model="dateRange"
                 value-format="YYYY-MM-DD"
-                placeholder="请选择消防证书有效日期"
-              />
+                type="daterange"
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              ></el-date-picker>
             </el-form-item>
-            <el-form-item label="各类仓库面积" prop="warehouseAreaInfo">
-              <el-input v-model="queryParams.warehouseAreaInfo" placeholder="请输入各类仓库面积" clearable @keyup.enter="handleQuery" />
+            <el-form-item label="认证状态" prop="authenticationState">
+              <el-select v-model="queryParams.authenticationState" placeholder="请选择" clearable >
+                <el-option v-for="dict in authentication_state_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -116,9 +131,9 @@
 
       <el-table v-loading="loading" border :data="warehouseList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
+<!--        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />-->
         <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-        <el-table-column label="占地(亩)" align="center" prop="areaMu" />
+<!--        <el-table-column label="占地(亩)" align="center" prop="areaMu" />-->
         <el-table-column label="土地属性" align="center" prop="landProperty">
           <template #default="scope">
             <dict-tag :options="landt_ypes" :value="scope.row.landProperty"/>
@@ -129,9 +144,9 @@
             <dict-tag :options="age_limit_type" :value="scope.row.useYears"/>
           </template>
         </el-table-column>
-        <el-table-column label="楼栋数量" align="center" prop="buildingCount" />
-        <el-table-column label="容积率" align="center" prop="volumeRatio" />
-        <el-table-column label="层高" align="center" prop="floorHeight" />
+<!--        <el-table-column label="楼栋数量" align="center" prop="buildingCount" />-->
+<!--        <el-table-column label="容积率" align="center" prop="volumeRatio" />-->
+<!--        <el-table-column label="层高" align="center" prop="floorHeight" />-->
         <el-table-column label="仓库总面积" align="center" prop="totalArea" />
         <el-table-column label="仓库管理方式" align="center" prop="manageType">
           <template #default="scope">
@@ -144,52 +159,52 @@
           </template>
         </el-table-column>
         <el-table-column label="详细地址" align="center" prop="address" />
-        <el-table-column label="主要品类" align="center" prop="mainCategory">
-          <template #default="scope">
-            <dict-tag :options="category_type" :value="scope.row.mainCategory"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="仓库内配套" align="center" prop="innerFacilities">
-          <template #default="scope">
-            <dict-tag :options="integrated_facilities_type" :value="scope.row.innerFacilities"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="仓库外配套" align="center" prop="outerFacilities">
-          <template #default="scope">
-            <dict-tag :options="outer_facilities_type" :value="scope.row.outerFacilities"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="园区安保" align="center" prop="securityInfo">
-          <template #default="scope">
-            <dict-tag :options="security_info_type" :value="scope.row.securityInfo"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="仓库优势" align="center" prop="advantage">
-          <template #default="scope">
-            <dict-tag :options="advantage_type" :value="scope.row.advantage"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="仓库功能" align="center" prop="functionInfo">
-          <template #default="scope">
-            <dict-tag :options="function_info_type" :value="scope.row.functionInfo"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="仓库实景展示" align="center" prop="galleryUrl" width="100">
-          <template #default="scope">
-            <image-preview :src="scope.row.galleryUrl" :width="50" :height="50"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="消防等级证书" align="center" prop="fireLevelUrl" width="100">
-          <template #default="scope">
-            <image-preview :src="scope.row.fireLevelUrl" :width="50" :height="50"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="消防证书有效日期" align="center" prop="fireExpireDate" width="180">
-          <template #default="scope">
-            <span>{{ parseTime(scope.row.fireExpireDate, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="各类仓库面积" align="center" prop="warehouseAreaInfo" />
+<!--        <el-table-column label="主要品类" align="center" prop="mainCategory">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="category_type" :value="scope.row.mainCategory"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="仓库内配套" align="center" prop="innerFacilities">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="integrated_facilities_type" :value="scope.row.innerFacilities"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="仓库外配套" align="center" prop="outerFacilities">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="outer_facilities_type" :value="scope.row.outerFacilities"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="园区安保" align="center" prop="securityInfo">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="security_info_type" :value="scope.row.securityInfo"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="仓库优势" align="center" prop="advantage">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="advantage_type" :value="scope.row.advantage"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="仓库功能" align="center" prop="functionInfo">-->
+<!--          <template #default="scope">-->
+<!--            <dict-tag :options="function_info_type" :value="scope.row.functionInfo"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="仓库实景展示" align="center" prop="galleryUrl" width="100">-->
+<!--          <template #default="scope">-->
+<!--            <image-preview :src="scope.row.galleryUrl" :width="50" :height="50"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="消防等级证书" align="center" prop="fireLevelUrl" width="100">-->
+<!--          <template #default="scope">-->
+<!--            <image-preview :src="scope.row.fireLevelUrl" :width="50" :height="50"/>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="消防证书有效日期" align="center" prop="fireExpireDate" width="180">-->
+<!--          <template #default="scope">-->
+<!--            <span>{{ parseTime(scope.row.fireExpireDate, '{y}-{m}-{d}') }}</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="各类仓库面积" align="center" prop="warehouseAreaInfo" />-->
         <el-table-column label="操作" align="center" fixed="right"  class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
@@ -361,7 +376,7 @@ import { listWarehouse, getWarehouse, delWarehouse, addWarehouse, updateWarehous
 import { WarehouseVO, WarehouseQuery, WarehouseForm } from '@/api/ck/warehouse/types';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { advantage_type, security_info_type, function_info_type, age_limit_type, warehouse_method_type, category_type, landt_ypes, area_type, outer_facilities_type, integrated_facilities_type } = toRefs<any>(proxy?.useDict('advantage_type', 'security_info_type', 'function_info_type', 'age_limit_type', 'warehouse_method_type', 'category_type', 'landt_ypes', 'area_type', 'outer_facilities_type', 'integrated_facilities_type'));
+const { advantage_type, security_info_type, function_info_type, age_limit_type, warehouse_method_type, category_type, landt_ypes, area_type, outer_facilities_type, integrated_facilities_type, authentication_state_type} = toRefs<any>(proxy?.useDict('advantage_type', 'security_info_type', 'function_info_type', 'age_limit_type', 'warehouse_method_type', 'category_type', 'landt_ypes', 'area_type', 'outer_facilities_type', 'integrated_facilities_type','authentication_state_type'));
 
 const warehouseList = ref<WarehouseVO[]>([]);
 const buttonLoading = ref(false);
