@@ -67,7 +67,7 @@
         </el-table-column>
         <el-table-column label="所属区域" align="center" prop="region">
           <template #default="scope">
-            <dict-tag :options="area_type" :value="scope.row.region"/>
+            {{ getAreaName(scope.row.region) }}
           </template>
         </el-table-column>
         <el-table-column label="详细地址" align="center" prop="address" />
@@ -259,6 +259,31 @@ const data = reactive<PageData<SiteForm, SiteQuery>>({
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+/** 根据区域代码数组获取区域名称 */
+const getAreaName = (regionCodes: string[] | string) => {
+  if (!regionCodes || (Array.isArray(regionCodes) && regionCodes.length === 0)) {
+    return '-';
+  }
+  
+  // 如果是数组，转换为区域名称路径
+  if (Array.isArray(regionCodes)) {
+    const names: string[] = [];
+    
+    regionCodes.forEach(code => {
+      const area = areaData.find(item => item.area_code === code);
+      if (area) {
+        names.push(area.name);
+      }
+    });
+    
+    return names.join(' / ');
+  }
+  
+  // 如果是单个字符串代码
+  const area = areaData.find(item => item.area_code === regionCodes);
+  return area ? area.name : regionCodes;
+};
 
 /** 查询网点信息列表 */
 const getList = async () => {
