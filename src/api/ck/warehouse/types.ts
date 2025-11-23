@@ -120,6 +120,10 @@ export interface WarehouseVO {
    * 认证状态
    */
   authenticationState: string;
+  /**
+   * 提交时间
+   */
+  createTime: string;
 
 }
 
@@ -237,6 +241,10 @@ export interface WarehouseForm extends BaseEntity {
    * 认证状态
    */
   authenticationState: string;
+  /**
+   * 提交时间
+   */
+  createTime: string;
 
 }
 
@@ -356,4 +364,9 @@ export interface WarehouseQuery extends PageQuery {
    * 认证状态
    */
   authenticationState: string;
+
+  /**
+   * 提交时间
+   */
+  createTime: string;
 }

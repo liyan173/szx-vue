@@ -212,11 +212,18 @@
 <!--          </template>-->
 <!--        </el-table-column>-->
 <!--        <el-table-column label="各类仓库面积" align="center" prop="warehouseAreaInfo" />-->
-        <el-table-column label="审核状态" align="center" prop="authenticationState" >
+        <el-table-column label="提交时间" align="center" prop="createTime" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核状态" align="center" prop="authenticationState">
           <template #default="scope">
             <dict-tag :options="authentication_state_type" :value="scope.row.authenticationState"/>
           </template>
         </el-table-column>
+
+
         <el-table-column label="操作" align="center" fixed="right"  class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
@@ -485,6 +492,7 @@ const initFormData: WarehouseForm = {
   fireExpireDate: undefined,
   warehouseAreaInfo: undefined,
   authenticationState: undefined,
+  createTime: undefined,
 }
 const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
   form: {...initFormData},
@@ -513,6 +521,7 @@ const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
     fireExpireDate: undefined,
     warehouseAreaInfo: undefined,
     authenticationState: undefined,
+    createTime: undefined,
     params: {
     }
   },

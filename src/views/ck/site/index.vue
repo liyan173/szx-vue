@@ -58,7 +58,7 @@
 
       <el-table v-loading="loading" border :data="siteList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
+<!--        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />-->
         <el-table-column label="网点类型" align="center" prop="siteType" />
         <el-table-column label="用户类型" align="center" prop="userType">
           <template #default="scope">
@@ -77,6 +77,13 @@
           </template>
         </el-table-column>
         <el-table-column label="联系电话" align="center" prop="contactPhone" />
+
+        <el-table-column label="提交时间" align="center" prop="createTime" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作" align="center" fixed="right"  class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
@@ -221,6 +228,7 @@ const initFormData: SiteForm = {
   address: undefined,
   contactPerson: undefined,
   contactPhone: undefined,
+  createTime: undefined,
 }
 const data = reactive<PageData<SiteForm, SiteQuery>>({
   form: {...initFormData},
@@ -233,6 +241,7 @@ const data = reactive<PageData<SiteForm, SiteQuery>>({
     address: undefined,
     contactPerson: undefined,
     contactPhone: undefined,
+    createTime: undefined,
     params: {
     }
   },
@@ -265,21 +274,21 @@ const getAreaName = (regionCodes: string[] | string) => {
   if (!regionCodes || (Array.isArray(regionCodes) && regionCodes.length === 0)) {
     return '-';
   }
-  
+
   // 如果是数组，转换为区域名称路径
   if (Array.isArray(regionCodes)) {
     const names: string[] = [];
-    
+
     regionCodes.forEach(code => {
       const area = areaData.find(item => item.area_code === code);
       if (area) {
         names.push(area.name);
       }
     });
-    
+
     return names.join(' / ');
   }
-  
+
   // 如果是单个字符串代码
   const area = areaData.find(item => item.area_code === regionCodes);
   return area ? area.name : regionCodes;

@@ -33,6 +33,10 @@ export interface SiteVO {
    * 联系电话
    */
   contactPhone: string;
+  /**
+   * 提交时间
+   */
+  createTime: string;
 
 }
 
@@ -72,6 +76,11 @@ export interface SiteForm extends BaseEntity {
    */
   contactPhone?: string;
 
+  /**
+   * 提交时间
+   */
+  createTime: string;
+
 }
 
 export interface SiteQuery extends PageQuery {
@@ -110,4 +119,8 @@ export interface SiteQuery extends PageQuery {
    * 日期范围参数
    */
   params?: any;
+  /**
+   * 提交时间
+   */
+  createTime: string;
 }
