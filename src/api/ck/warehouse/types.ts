@@ -124,6 +124,10 @@ export interface WarehouseVO {
    * 提交时间
    */
   createTime: string;
+  /**
+   * 企业id
+   */
+  companyId: string;
 
 }
 
@@ -245,7 +249,10 @@ export interface WarehouseForm extends BaseEntity {
    * 提交时间
    */
   createTime: string;
-
+  /**
+   * 企业id
+   */
+  companyId: string;
 }
 
 export interface WarehouseQuery extends PageQuery {
@@ -369,4 +376,8 @@ export interface WarehouseQuery extends PageQuery {
    * 提交时间
    */
   createTime: string;
+  /**
+   * 企业id
+   */
+  companyId: string;
 }

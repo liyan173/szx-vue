@@ -101,6 +101,16 @@
     <!-- 添加或修改网点信息对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
       <el-form ref="siteFormRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="所属企业" prop="companyId">
+          <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable>
+            <el-option
+                v-for="company in companyList"
+                :key="company.id"
+                :label="company.companyName"
+                :value="company.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="网点类型" prop="siteType">
           <el-input v-model="form.siteType" placeholder="请输入网点类型" />
         </el-form-item>
@@ -158,6 +168,8 @@
 <script setup name="Site" lang="ts">
 import { listSite, getSite, delSite, addSite, updateSite } from '@/api/ck/site';
 import { SiteVO, SiteQuery, SiteForm } from '@/api/ck/site/types';
+import { listCompany } from '@/api/ck/company';
+import { CompanyVO } from '@/api/ck/company/types';
 import areaData from '@/utils/cnarea_2023.json';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -204,6 +216,7 @@ const areaOptions = computed(() => {
 });
 
 const siteList = ref<SiteVO[]>([]);
+const companyList = ref<CompanyVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -222,6 +235,7 @@ const dialog = reactive<DialogOption>({
 
 const initFormData: SiteForm = {
   id: undefined,
+  companyId: undefined,
   siteType: undefined,
   userType: undefined,
   region: undefined,
@@ -235,6 +249,7 @@ const data = reactive<PageData<SiteForm, SiteQuery>>({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
+    companyId: undefined,
     siteType: undefined,
     userType: undefined,
     region: undefined,
@@ -248,6 +263,9 @@ const data = reactive<PageData<SiteForm, SiteQuery>>({
   rules: {
     id: [
       { required: true, message: "主键ID不能为空", trigger: "blur" }
+    ],
+    companyId: [
+      { required: true, message: "请选择所属企业", trigger: "change" }
     ],
     siteType: [
       { required: true, message: "网点类型不能为空", trigger: "blur" }
@@ -268,6 +286,12 @@ const data = reactive<PageData<SiteForm, SiteQuery>>({
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+/** 查询企业信息列表 */
+const getCompanyList = async () => {
+  const res = await listCompany({ pageNum: 1, pageSize: 9999 });
+  companyList.value = res.rows;
+}
 
 /** 根据区域代码数组获取区域名称 */
 const getAreaName = (regionCodes: string[] | string) => {
@@ -335,8 +359,9 @@ const handleSelectionChange = (selection: SiteVO[]) => {
 }
 
 /** 新增按钮操作 */
-const handleAdd = () => {
+const handleAdd = async () => {
   reset();
+  await getCompanyList();
   dialog.visible = true;
   dialog.title = "添加网点信息";
 }

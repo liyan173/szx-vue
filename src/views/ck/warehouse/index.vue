@@ -4,88 +4,6 @@
       <div v-show="showSearch" class="mb-[10px]">
         <el-card shadow="hover">
           <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-<!--            <el-form-item label="仓库名称" prop="warehouseName">-->
-<!--              <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="占地(亩)" prop="areaMu">-->
-<!--              <el-input v-model="queryParams.areaMu" placeholder="请输入占地(亩)" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="土地属性" prop="landProperty">-->
-<!--              <el-select v-model="queryParams.landProperty" placeholder="请选择土地属性" clearable >-->
-<!--                <el-option v-for="dict in landt_ypes" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="使用年限" prop="useYears">-->
-<!--              <el-select v-model="queryParams.useYears" placeholder="请选择使用年限" clearable >-->
-<!--                <el-option v-for="dict in age_limit_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="楼栋数量" prop="buildingCount">-->
-<!--              <el-input v-model="queryParams.buildingCount" placeholder="请输入楼栋数量" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="容积率" prop="volumeRatio">-->
-<!--              <el-input v-model="queryParams.volumeRatio" placeholder="请输入容积率" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="层高" prop="floorHeight">-->
-<!--              <el-input v-model="queryParams.floorHeight" placeholder="请输入层高" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库总面积" prop="totalArea">-->
-<!--              <el-input v-model="queryParams.totalArea" placeholder="请输入仓库总面积" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库管理方式" prop="manageType">-->
-<!--              <el-select v-model="queryParams.manageType" placeholder="请选择仓库管理方式" clearable >-->
-<!--                <el-option v-for="dict in warehouse_method_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="所属区域" prop="region">-->
-<!--              <el-select v-model="queryParams.region" placeholder="请选择所属区域" clearable >-->
-<!--                <el-option v-for="dict in area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="详细地址" prop="address">-->
-<!--              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="主要品类" prop="mainCategory">-->
-<!--              <el-select v-model="queryParams.mainCategory" placeholder="请选择主要品类" clearable >-->
-<!--                <el-option v-for="dict in category_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库内配套" prop="innerFacilities">-->
-<!--              <el-select v-model="queryParams.innerFacilities" placeholder="请选择仓库内配套" clearable >-->
-<!--                <el-option v-for="dict in integrated_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库外配套" prop="outerFacilities">-->
-<!--              <el-select v-model="queryParams.outerFacilities" placeholder="请选择仓库外配套" clearable >-->
-<!--                <el-option v-for="dict in outer_facilities_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="园区安保" prop="securityInfo">-->
-<!--              <el-select v-model="queryParams.securityInfo" placeholder="请选择园区安保" clearable >-->
-<!--                <el-option v-for="dict in security_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库优势" prop="advantage">-->
-<!--              <el-select v-model="queryParams.advantage" placeholder="请选择仓库优势" clearable >-->
-<!--                <el-option v-for="dict in advantage_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="仓库功能" prop="functionInfo">-->
-<!--              <el-select v-model="queryParams.functionInfo" placeholder="请选择仓库功能" clearable >-->
-<!--                <el-option v-for="dict in function_info_type" :key="dict.value" :label="dict.label" :value="dict.value"/>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="消防证书有效日期" prop="fireExpireDate">-->
-<!--              <el-date-picker clearable-->
-<!--                v-model="queryParams.fireExpireDate"-->
-<!--                type="date"-->
-<!--                value-format="YYYY-MM-DD"-->
-<!--                placeholder="请选择消防证书有效日期"-->
-<!--              />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="各类仓库面积" prop="warehouseAreaInfo">-->
-<!--              <el-input v-model="queryParams.warehouseAreaInfo" placeholder="请输入各类仓库面积" clearable @keyup.enter="handleQuery" />-->
-<!--            </el-form-item>-->
             <el-form-item label="提交日期" style="width: 308px">
               <el-date-picker
                 v-model="dateRange"
@@ -116,24 +34,13 @@
           <el-col :span="1.5">
             <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['ck:warehouse:add']">新增</el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['ck:warehouse:edit']">修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['ck:warehouse:remove']">删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['ck:warehouse:export']">导出</el-button>
-          </el-col>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
       </template>
 
       <el-table v-loading="loading" border :data="warehouseList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-<!--        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />-->
         <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-<!--        <el-table-column label="占地(亩)" align="center" prop="areaMu" />-->
         <el-table-column label="土地属性" align="center" prop="landProperty">
           <template #default="scope">
             <dict-tag :options="landt_ypes" :value="scope.row.landProperty"/>
@@ -144,74 +51,18 @@
             <dict-tag :options="age_limit_type" :value="scope.row.useYears"/>
           </template>
         </el-table-column>
-<!--        <el-table-column label="楼栋数量" align="center" prop="buildingCount" />-->
-<!--        <el-table-column label="容积率" align="center" prop="volumeRatio" />-->
-<!--        <el-table-column label="层高" align="center" prop="floorHeight" />-->
         <el-table-column label="仓库总面积" align="center" prop="totalArea" />
         <el-table-column label="仓库管理方式" align="center" prop="manageType">
           <template #default="scope">
             <dict-tag :options="warehouse_method_type" :value="scope.row.manageType"/>
           </template>
         </el-table-column>
-<!--        <el-table-column label="所属区域" align="center" prop="region">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="area_type" :value="scope.row.region"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
         <el-table-column label="所属区域" align="center" prop="region">
           <template #default="scope">
             {{ getAreaName(scope.row.region) }}
           </template>
         </el-table-column>
-
-
         <el-table-column label="详细地址" align="center" prop="address" />
-<!--        <el-table-column label="主要品类" align="center" prop="mainCategory">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="category_type" :value="scope.row.mainCategory"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="仓库内配套" align="center" prop="innerFacilities">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="integrated_facilities_type" :value="scope.row.innerFacilities"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="仓库外配套" align="center" prop="outerFacilities">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="outer_facilities_type" :value="scope.row.outerFacilities"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="园区安保" align="center" prop="securityInfo">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="security_info_type" :value="scope.row.securityInfo"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="仓库优势" align="center" prop="advantage">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="advantage_type" :value="scope.row.advantage"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="仓库功能" align="center" prop="functionInfo">-->
-<!--          <template #default="scope">-->
-<!--            <dict-tag :options="function_info_type" :value="scope.row.functionInfo"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="仓库实景展示" align="center" prop="galleryUrl" width="100">-->
-<!--          <template #default="scope">-->
-<!--            <image-preview :src="scope.row.galleryUrl" :width="50" :height="50"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="消防等级证书" align="center" prop="fireLevelUrl" width="100">-->
-<!--          <template #default="scope">-->
-<!--            <image-preview :src="scope.row.fireLevelUrl" :width="50" :height="50"/>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="消防证书有效日期" align="center" prop="fireExpireDate" width="180">-->
-<!--          <template #default="scope">-->
-<!--            <span>{{ parseTime(scope.row.fireExpireDate, '{y}-{m}-{d}') }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="各类仓库面积" align="center" prop="warehouseAreaInfo" />-->
         <el-table-column label="提交时间" align="center" prop="createTime" width="180">
           <template #default="scope">
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
@@ -241,6 +92,16 @@
     <!-- 添加或修改仓库基础数据录入对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
       <el-form ref="warehouseFormRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="所属企业" prop="companyId">
+          <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable>
+            <el-option
+                v-for="company in companyList"
+                :key="company.id"
+                :label="company.companyName"
+                :value="company.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="仓库名称" prop="warehouseName">
           <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
         </el-form-item>
@@ -403,6 +264,8 @@
 </template>
 
 <script setup name="Warehouse" lang="ts">
+import { listCompany } from '@/api/ck/company';
+import { CompanyVO, CompanyQuery, CompanyForm } from '@/api/ck/company/types';
 import { listWarehouse, getWarehouse, delWarehouse, addWarehouse, updateWarehouse } from '@/api/ck/warehouse';
 import { WarehouseVO, WarehouseQuery, WarehouseForm } from '@/api/ck/warehouse/types';
 import areaData from '@/utils/cnarea_2023.json';
@@ -410,6 +273,7 @@ const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { advantage_type, security_info_type, function_info_type, age_limit_type, warehouse_method_type, category_type, landt_ypes, area_type, outer_facilities_type, integrated_facilities_type, authentication_state_type} = toRefs<any>(proxy?.useDict('advantage_type', 'security_info_type', 'function_info_type', 'age_limit_type', 'warehouse_method_type', 'category_type', 'landt_ypes', 'area_type', 'outer_facilities_type', 'integrated_facilities_type','authentication_state_type'));
 
 const warehouseList = ref<WarehouseVO[]>([]);
+const companyList = ref<CompanyVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -470,6 +334,7 @@ const dialog = reactive<DialogOption>({
 
 const initFormData: WarehouseForm = {
   id: undefined,
+  companyId: undefined,
   warehouseName: undefined,
   areaMu: undefined,
   landProperty: undefined,
@@ -499,6 +364,7 @@ const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
+    companyId: undefined,
     warehouseName: undefined,
     areaMu: undefined,
     landProperty: undefined,
@@ -528,6 +394,9 @@ const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
   rules: {
     id: [
       { required: true, message: "主键ID不能为空", trigger: "blur" }
+    ],
+    companyId: [
+      { required: true, message: "请选择所属企业", trigger: "change" }
     ],
     warehouseName: [
       { required: true, message: "仓库名称不能为空", trigger: "blur" }
@@ -594,7 +463,11 @@ const getAreaName = (regionCodes: string[] | string) => {
   const area = areaData.find(item => item.area_code === regionCodes);
   return area ? area.name : regionCodes;
 };
-
+/** 查询企业信息列表 */
+const getCompanyList = async () => {
+  const res = await listCompany({ pageNum: 1, pageSize: 9999 });
+  companyList.value = res.rows;
+}
 
 /** 查询仓库基础数据录入列表 */
 const getList = async () => {
@@ -638,8 +511,9 @@ const handleSelectionChange = (selection: WarehouseVO[]) => {
 }
 
 /** 新增按钮操作 */
-const handleAdd = () => {
+const handleAdd = async () => {
   reset();
+  await getCompanyList();
   dialog.visible = true;
   dialog.title = "添加仓库基础数据录入";
 }

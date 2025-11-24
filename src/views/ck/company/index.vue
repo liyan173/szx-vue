@@ -7,48 +7,18 @@
             <el-form-item label="企业名称" prop="companyName">
               <el-input v-model="queryParams.companyName" placeholder="请输入企业名称" clearable @keyup.enter="handleQuery" />
             </el-form-item>
-            <el-form-item label="注册地址" prop="registerAddress">
-              <el-input v-model="queryParams.registerAddress" placeholder="请输入注册地址" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="企业性质" prop="companyType">
-              <el-select v-model="queryParams.companyType" placeholder="请选择企业性质" clearable >
-                <el-option v-for="dict in enterprise_nature_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="企业规模" prop="companyScale">
-              <el-select v-model="queryParams.companyScale" placeholder="请选择企业规模" clearable >
-                <el-option v-for="dict in company_scale_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="企业简介" prop="companyIntro">
-              <el-input v-model="queryParams.companyIntro" placeholder="请输入企业简介" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="车辆信息" prop="vehicleInfo">
-              <el-input v-model="queryParams.vehicleInfo" placeholder="请输入车辆信息" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
             <el-form-item label="统一社会信用代码" prop="creditCode">
               <el-input v-model="queryParams.creditCode" placeholder="请输入统一社会信用代码" clearable @keyup.enter="handleQuery" />
             </el-form-item>
-            <el-form-item label="详细地址" prop="address">
-              <el-input v-model="queryParams.address" placeholder="请输入详细地址" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="业务类型" prop="businessType">
-              <el-select v-model="queryParams.businessType" placeholder="请选择业务类型" clearable >
-                <el-option v-for="dict in business_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+            <el-form-item label="会员级别" prop="member">
+              <el-select v-model="queryParams.member" placeholder="请选择会员级别" clearable >
+                <el-option v-for="dict in member_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
               </el-select>
             </el-form-item>
-            <el-form-item label="主要配送品类" prop="mainCategory">
-              <el-select v-model="queryParams.mainCategory" placeholder="请选择主要配送品类" clearable >
-                <el-option v-for="dict in main_category_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+            <el-form-item label="认证状态" prop="authenticationState">
+              <el-select v-model="queryParams.authenticationState" placeholder="请选择认证状态" clearable >
+                <el-option v-for="dict in authentication_state_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
               </el-select>
-            </el-form-item>
-            <el-form-item label="主要配送区域" prop="deliveryArea">
-              <el-select v-model="queryParams.deliveryArea" placeholder="请选择主要配送区域" clearable >
-                <el-option v-for="dict in delivery_area_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="配送中心信息" prop="deliveryCenterInfo">
-              <el-input v-model="queryParams.deliveryCenterInfo" placeholder="请输入配送中心信息" clearable @keyup.enter="handleQuery" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -80,39 +50,29 @@
 
       <el-table v-loading="loading" border :data="companyList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
         <el-table-column label="企业名称" align="center" prop="companyName" />
-        <el-table-column label="注册地址" align="center" prop="registerAddress" />
-        <el-table-column label="企业性质" align="center" prop="companyType">
-          <template #default="scope">
-            <dict-tag :options="enterprise_nature_type" :value="scope.row.companyType"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="企业规模" align="center" prop="companyScale">
-          <template #default="scope">
-            <dict-tag :options="company_scale_type" :value="scope.row.companyScale"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="企业简介" align="center" prop="companyIntro" />
-        <el-table-column label="车辆信息" align="center" prop="vehicleInfo" />
         <el-table-column label="统一社会信用代码" align="center" prop="creditCode" />
-        <el-table-column label="详细地址" align="center" prop="address" />
-        <el-table-column label="业务类型" align="center" prop="businessType">
+        <el-table-column label="会员级别" align="center" prop="member">
           <template #default="scope">
-            <dict-tag :options="business_type" :value="scope.row.businessType"/>
+            <dict-tag :options="member_type" :value="scope.row.member"/>
           </template>
         </el-table-column>
-        <el-table-column label="主要配送品类" align="center" prop="mainCategory">
+        <el-table-column label="法定代表人" align="center" prop="juridicalPerson" />
+        <el-table-column label="所属园区" align="center" prop="gardenArea">
           <template #default="scope">
-            <dict-tag :options="main_category_type" :value="scope.row.mainCategory"/>
+            <dict-tag :options="garden_type" :value="scope.row.gardenArea"/>
           </template>
         </el-table-column>
-        <el-table-column label="主要配送区域" align="center" prop="deliveryArea">
+        <el-table-column label="业务领域" align="center" prop="linesOfBusiness">
           <template #default="scope">
-            <dict-tag :options="delivery_area_type" :value="scope.row.deliveryArea"/>
+            <dict-tag :options="lines_of_business_type" :value="scope.row.linesOfBusiness"/>
           </template>
         </el-table-column>
-        <el-table-column label="配送中心信息" align="center" prop="deliveryCenterInfo" />
+        <el-table-column label="认证状态" align="center" prop="authenticationState">
+          <template #default="scope">
+            <dict-tag :options="authentication_state_type" :value="scope.row.authenticationState"/>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" fixed="right"  class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
@@ -133,34 +93,44 @@
         <el-form-item label="企业名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入企业名称" />
         </el-form-item>
+        <el-form-item label="所属区域" prop="region">
+          <el-cascader
+            v-model="form.region"
+            :options="areaOptions"
+            :props="cascaderProps"
+            placeholder="请选择省/市/区"
+            clearable
+            filterable
+          ></el-cascader>
+        </el-form-item>
         <el-form-item label="注册地址" prop="registerAddress">
           <el-input v-model="form.registerAddress" placeholder="请输入注册地址" />
         </el-form-item>
         <el-form-item label="企业性质" prop="companyType">
           <el-select v-model="form.companyType" placeholder="请选择企业性质">
             <el-option
-                v-for="dict in enterprise_nature_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in enterprise_nature_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业规模" prop="companyScale">
           <el-select v-model="form.companyScale" placeholder="请选择企业规模">
             <el-option
-                v-for="dict in company_scale_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in company_scale_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业简介" prop="companyIntro">
-            <el-input v-model="form.companyIntro" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.companyIntro" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="车辆信息" prop="vehicleInfo">
-            <el-input v-model="form.vehicleInfo" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.vehicleInfo" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="统一社会信用代码" prop="creditCode">
           <el-input v-model="form.creditCode" placeholder="请输入统一社会信用代码" />
@@ -171,35 +141,81 @@
         <el-form-item label="业务类型" prop="businessType">
           <el-select v-model="form.businessType" placeholder="请选择业务类型">
             <el-option
-                v-for="dict in business_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in business_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="主要配送品类" prop="mainCategory">
           <el-select v-model="form.mainCategory" placeholder="请选择主要配送品类">
             <el-option
-                v-for="dict in main_category_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in main_category_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="主要配送区域" prop="deliveryArea">
           <el-select v-model="form.deliveryArea" placeholder="请选择主要配送区域">
             <el-option
-                v-for="dict in delivery_area_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+              v-for="dict in delivery_area_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="配送中心信息" prop="deliveryCenterInfo">
-            <el-input v-model="form.deliveryCenterInfo" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.deliveryCenterInfo" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" placeholder="请输入备注" />
+        </el-form-item>
+        <el-form-item label="会员级别" prop="member">
+          <el-select v-model="form.member" placeholder="请选择会员级别">
+            <el-option
+              v-for="dict in member_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="法定代表人" prop="juridicalPerson">
+          <el-input v-model="form.juridicalPerson" placeholder="请输入法定代表人" />
+        </el-form-item>
+        <el-form-item label="所属园区" prop="gardenArea">
+          <el-select v-model="form.gardenArea" placeholder="请选择所属园区">
+            <el-option
+              v-for="dict in garden_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="业务领域" prop="linesOfBusiness">
+          <el-select v-model="form.linesOfBusiness" placeholder="请选择业务领域">
+            <el-option
+              v-for="dict in lines_of_business_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="认证状态" prop="authenticationState">
+          <el-select v-model="form.authenticationState" placeholder="请选择认证状态">
+            <el-option
+              v-for="dict in authentication_state_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -215,9 +231,50 @@
 <script setup name="Company" lang="ts">
 import { listCompany, getCompany, delCompany, addCompany, updateCompany } from '@/api/ck/company';
 import { CompanyVO, CompanyQuery, CompanyForm } from '@/api/ck/company/types';
+import areaData from '@/utils/cnarea_2023.json';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { delivery_area_type, company_scale_type, main_category_type, enterprise_nature_type, business_type } = toRefs<any>(proxy?.useDict('delivery_area_type', 'company_scale_type', 'main_category_type', 'enterprise_nature_type', 'business_type'));
+const { authentication_state_type, delivery_area_type, company_scale_type, main_category_type, garden_type, enterprise_nature_type, lines_of_business_type, business_type, member_type } = toRefs<any>(proxy?.useDict('authentication_state_type', 'delivery_area_type', 'company_scale_type', 'main_category_type', 'garden_type', 'enterprise_nature_type', 'lines_of_business_type', 'business_type', 'member_type'));
+
+// Cascader 配置
+const cascaderProps = {
+  value: 'area_code',
+  label: 'name',
+  children: 'children'
+};
+
+// 构建三级联动数据结构
+const areaOptions = computed(() => {
+  // 获取所有省级数据（level === '1'）
+  const provinces = areaData.filter(item => item.level === '1');
+
+  return provinces.map(province => {
+    // 获取该省下的所有市级数据（level === '2'）
+    const cities = areaData.filter(item =>
+      item.level === '2' && item.parent_code === province.area_code
+    );
+
+    return {
+      area_code: province.area_code,
+      name: province.name,
+      children: cities.map(city => {
+        // 获取该市下的所有区县数据（level === '3'）
+        const districts = areaData.filter(item =>
+          item.level === '3' && item.parent_code === city.area_code
+        );
+
+        return {
+          area_code: city.area_code,
+          name: city.name,
+          children: districts.map(district => ({
+            area_code: district.area_code,
+            name: district.name
+          }))
+        };
+      })
+    };
+  });
+});
 
 const companyList = ref<CompanyVO[]>([]);
 const buttonLoading = ref(false);
@@ -250,6 +307,12 @@ const initFormData: CompanyForm = {
   mainCategory: undefined,
   deliveryArea: undefined,
   deliveryCenterInfo: undefined,
+  remark: undefined,
+  member: undefined,
+  juridicalPerson: undefined,
+  gardenArea: undefined,
+  linesOfBusiness: undefined,
+  authenticationState: undefined
 }
 const data = reactive<PageData<CompanyForm, CompanyQuery>>({
   form: {...initFormData},
@@ -257,17 +320,9 @@ const data = reactive<PageData<CompanyForm, CompanyQuery>>({
     pageNum: 1,
     pageSize: 10,
     companyName: undefined,
-    registerAddress: undefined,
-    companyType: undefined,
-    companyScale: undefined,
-    companyIntro: undefined,
-    vehicleInfo: undefined,
     creditCode: undefined,
-    address: undefined,
-    businessType: undefined,
-    mainCategory: undefined,
-    deliveryArea: undefined,
-    deliveryCenterInfo: undefined,
+    member: undefined,
+    authenticationState: undefined,
     params: {
     }
   },
@@ -309,6 +364,31 @@ const data = reactive<PageData<CompanyForm, CompanyQuery>>({
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+/** 根据区域代码数组获取区域名称 */
+const getAreaName = (regionCodes: string[] | string) => {
+  if (!regionCodes || (Array.isArray(regionCodes) && regionCodes.length === 0)) {
+    return '-';
+  }
+
+  // 如果是数组，转换为区域名称路径
+  if (Array.isArray(regionCodes)) {
+    const names: string[] = [];
+
+    regionCodes.forEach(code => {
+      const area = areaData.find(item => item.area_code === code);
+      if (area) {
+        names.push(area.name);
+      }
+    });
+
+    return names.join(' / ');
+  }
+
+  // 如果是单个字符串代码
+  const area = areaData.find(item => item.area_code === regionCodes);
+  return area ? area.name : regionCodes;
+};
 
 /** 查询企业信息列表 */
 const getList = async () => {
