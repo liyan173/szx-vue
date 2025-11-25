@@ -6,27 +6,6 @@
 
     <div class="right-menu flex align-center">
       <template v-if="appStore.device !== 'mobile'">
-        <el-select
-          v-if="userId === 1 && tenantEnabled"
-          v-model="companyName"
-          class="min-w-244px"
-          clearable
-          filterable
-          reserve-keyword
-          :placeholder="proxy.$t('navbar.selectTenant')"
-          @change="dynamicTenantEvent"
-          @clear="dynamicClearEvent"
-        >
-          <el-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName" :value="item.tenantId"> </el-option>
-          <template #prefix><svg-icon icon-class="company" class="el-input__icon input-icon" /></template>
-        </el-select>
-
-        <search-menu ref="searchMenuRef" />
-        <el-tooltip content="搜索" effect="dark" placement="bottom">
-          <div class="right-menu-item hover-effect" @click="openSearchMenu">
-            <svg-icon class-name="search-icon" icon-class="search" />
-          </div>
-        </el-tooltip>
         <!-- 消息 -->
         <el-tooltip :content="proxy.$t('navbar.message')" effect="dark" placement="bottom">
           <div>
@@ -41,13 +20,6 @@
               </template>
             </el-popover>
           </div>
-        </el-tooltip>
-        <el-tooltip content="Github" effect="dark" placement="bottom">
-          <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-        <el-tooltip :content="proxy.$t('navbar.document')" effect="dark" placement="bottom">
-          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
         </el-tooltip>
 
         <el-tooltip :content="proxy.$t('navbar.full')" effect="dark" placement="bottom">
@@ -88,7 +60,6 @@
 </template>
 
 <script setup lang="ts">
-import SearchMenu from './TopBar/search.vue';
 import { useAppStore } from '@/store/modules/app';
 import { useUserStore } from '@/store/modules/user';
 import { useSettingsStore } from '@/store/modules/settings';
@@ -115,12 +86,6 @@ const tenantList = ref<TenantVO[]>([]);
 const dynamic = ref(false);
 // 租户开关
 const tenantEnabled = ref(true);
-// 搜索菜单
-const searchMenuRef = ref<InstanceType<typeof SearchMenu>>();
-
-const openSearchMenu = () => {
-  searchMenuRef.value?.openSearch();
-};
 
 // 动态切换
 const dynamicTenantEvent = async (tenantId: string) => {
