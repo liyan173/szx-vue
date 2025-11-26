@@ -26,10 +26,6 @@
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
         </el-tooltip>
 
-        <el-tooltip :content="proxy.$t('navbar.language')" effect="dark" placement="bottom">
-          <lang-select id="lang-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
         <el-tooltip :content="proxy.$t('navbar.layoutSize')" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>

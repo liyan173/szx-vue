@@ -1,10 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <div class="title-box">
-        <h3 class="title">{{ title }}</h3>
-        <lang-select />
-      </div>
+      <h3 class="title">{{ title }}</h3>
       <el-form-item v-if="tenantEnabled" prop="tenantId">
         <el-select v-model="loginForm.tenantId" filterable :placeholder="proxy.$t('login.selectPlaceholder')" style="width: 100%">
           <el-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName" :value="item.tenantId"></el-option>
@@ -71,10 +68,6 @@
         </div>
       </el-form-item>
     </el-form>
-    <!--  底部  -->
-    <div class="el-login-footer">
-      <span>Copyright © 2018-2025 疯狂的狮子Li All Rights Reserved.</span>
-    </div>
   </div>
 </template>
 
