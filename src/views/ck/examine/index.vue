@@ -83,6 +83,68 @@
 
       <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
     </el-card>
+
+    <!-- 审核详情对话框 -->
+    <el-dialog title="仓库审核" v-model="dialog.visible" width="800px" append-to-body>
+      <el-descriptions :column="2" border>
+        <el-descriptions-item label="仓库名称">{{ form.warehouseName }}</el-descriptions-item>
+        <el-descriptions-item label="占地(亩)">{{ form.areaMu }}</el-descriptions-item>
+        <el-descriptions-item label="土地属性">
+          <dict-tag :options="landt_ypes" :value="form.landProperty"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="使用年限">
+          <dict-tag :options="age_limit_type" :value="form.useYears"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="楼栋数量">{{ form.buildingCount }}</el-descriptions-item>
+        <el-descriptions-item label="容积率">{{ form.volumeRatio }}</el-descriptions-item>
+        <el-descriptions-item label="层高">{{ form.floorHeight }}</el-descriptions-item>
+        <el-descriptions-item label="仓库总面积">{{ form.totalArea }}</el-descriptions-item>
+        <el-descriptions-item label="仓库管理方式">
+          <dict-tag :options="warehouse_method_type" :value="form.manageType"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="所属区域">{{ getAreaName(form.region) }}</el-descriptions-item>
+        <el-descriptions-item label="详细地址" :span="2">{{ form.address }}</el-descriptions-item>
+        <el-descriptions-item label="主要品类">
+          <dict-tag :options="category_type" :value="form.mainCategory"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="仓库内配套">
+          <dict-tag :options="integrated_facilities_type" :value="form.innerFacilities"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="仓库外配套">
+          <dict-tag :options="outer_facilities_type" :value="form.outerFacilities"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="园区安保">
+          <dict-tag :options="security_info_type" :value="form.securityInfo"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="仓库优势">
+          <dict-tag :options="advantage_type" :value="form.advantage"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="仓库功能">
+          <dict-tag :options="function_info_type" :value="form.functionInfo"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="消防证书有效日期" :span="2">
+          {{ parseTime(form.fireExpireDate, '{y}-{m}-{d}') }}
+        </el-descriptions-item>
+        <el-descriptions-item label="各类仓库面积" :span="2">
+          {{ form.warehouseAreaInfo }}
+        </el-descriptions-item>
+        <el-descriptions-item label="当前审核状态" :span="2">
+          <dict-tag :options="authentication_state_type" :value="form.authenticationState"/>
+        </el-descriptions-item>
+      </el-descriptions>
+      
+      <template #footer>
+        <div class="dialog-footer" style="text-align: center;">
+          <el-button :loading="buttonLoading" type="success" @click="handleApprove(1)" size="large">
+            <el-icon><Select /></el-icon> 通过
+          </el-button>
+          <el-button :loading="buttonLoading" type="danger" @click="handleApprove(2)" size="large">
+            <el-icon><Close /></el-icon> 不通过
+          </el-button>
+          <el-button @click="cancel" size="large">关闭</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -213,6 +275,9 @@ const data = reactive<PageData<WarehouseForm, WarehouseQuery>>({
     id: [
       { required: true, message: "主键ID不能为空", trigger: "blur" }
     ],
+    authenticationState: [
+      { required: true, message: "请选择审核状态", trigger: "change" }
+    ],
     warehouseName: [
       { required: true, message: "仓库名称不能为空", trigger: "blur" }
     ],
@@ -328,31 +393,40 @@ const handleAdd = () => {
   dialog.title = "添加仓库基础数据录入";
 }
 
-/** 修改按钮操作 */
+/** 修改按钮操作 - 查看详情并审核 */
 const handleUpdate = async (row?: WarehouseVO) => {
   reset();
   const _id = row?.id || ids.value[0]
   const res = await getWarehouse(_id);
   Object.assign(form.value, res.data);
   dialog.visible = true;
-  dialog.title = "修改仓库基础数据录入";
+  dialog.title = "仓库审核";
+}
+
+/** 审批操作 */
+const handleApprove = async (status: number) => {
+  try {
+    await proxy?.$modal.confirm(`确认${status === 1 ? '通过' : '不通过'}该仓库的审核吗?`);
+    
+    buttonLoading.value = true;
+    // 提交完整的表单数据,只修改审核状态
+    const updateData = {
+      ...form.value,
+      authenticationState: status.toString()
+    };
+    
+    await updateWarehouse(updateData).finally(() => buttonLoading.value = false);
+    proxy?.$modal.msgSuccess('审核成功');
+    dialog.visible = false;
+    await getList();
+  } catch (error) {
+    // 用户取消操作
+  }
 }
 
 /** 提交按钮 */
 const submitForm = () => {
-  warehouseFormRef.value?.validate(async (valid: boolean) => {
-    if (valid) {
-      buttonLoading.value = true;
-      if (form.value.id) {
-        await updateWarehouse(form.value).finally(() =>  buttonLoading.value = false);
-      } else {
-        await addWarehouse(form.value).finally(() =>  buttonLoading.value = false);
-      }
-      proxy?.$modal.msgSuccess("操作成功");
-      dialog.visible = false;
-      await getList();
-    }
-  });
+  // 审核页面不需要此方法，使用 handleApprove 代替
 }
 
 /** 删除按钮操作 */
