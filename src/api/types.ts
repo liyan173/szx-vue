@@ -26,6 +26,7 @@ export interface LoginData {
   uuid?: string;
   clientId: string;
   grantType: string;
+  userType?: string; // 用户角色类型：enterprise(企业)、personal(个人)、admin(管理人员)
 }
 
 /**

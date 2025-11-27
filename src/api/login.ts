@@ -16,6 +16,7 @@ export function login(data: LoginData): AxiosPromise<LoginResult> {
     clientId: data.clientId || clientId,
     grantType: data.grantType || 'password'
   };
+  console.log('发送到后端的登录参数（加密前）：', params);
   return request({
     url: '/auth/login',
     headers: {

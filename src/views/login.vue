@@ -1,7 +1,12 @@
 <template>
-  <div class="login">
+  <div class="login" :class="`login-${loginForm.userType}`">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">{{ title }}</h3>
+      <el-tabs v-model="loginForm.userType" class="role-tabs">
+        <el-tab-pane label="企业" name="enterprise"></el-tab-pane>
+        <el-tab-pane label="个人" name="personal"></el-tab-pane>
+        <el-tab-pane label="管理人员" name="admin"></el-tab-pane>
+      </el-tabs>
       <el-form-item v-if="tenantEnabled" prop="tenantId">
         <el-select v-model="loginForm.tenantId" filterable :placeholder="proxy.$t('login.selectPlaceholder')" style="width: 100%">
           <el-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName" :value="item.tenantId"></el-option>
@@ -93,7 +98,8 @@ const loginForm = ref<LoginData>({
   password: 'admin123',
   rememberMe: false,
   code: '',
-  uuid: ''
+  uuid: '',
+  userType: 'enterprise' // 默认选择企业角色
 } as LoginData);
 
 const loginRules: ElFormRules = {
@@ -135,14 +141,17 @@ const handleLogin = () => {
         localStorage.setItem('username', String(loginForm.value.username));
         localStorage.setItem('password', String(loginForm.value.password));
         localStorage.setItem('rememberMe', String(loginForm.value.rememberMe));
+        localStorage.setItem('userType', String(loginForm.value.userType));
       } else {
         // 否则移除
         localStorage.removeItem('tenantId');
         localStorage.removeItem('username');
         localStorage.removeItem('password');
         localStorage.removeItem('rememberMe');
+        localStorage.removeItem('userType');
       }
       // 调用action的登录方法
+      console.log('登录参数：', loginForm.value);
       const [err] = await to(userStore.login(loginForm.value));
       if (!err) {
         const redirectUrl = redirect.value || '/';
@@ -179,11 +188,13 @@ const getLoginData = () => {
   const username = localStorage.getItem('username');
   const password = localStorage.getItem('password');
   const rememberMe = localStorage.getItem('rememberMe');
+  const userType = localStorage.getItem('userType');
   loginForm.value = {
     tenantId: tenantId === null ? String(loginForm.value.tenantId) : tenantId,
     username: username === null ? String(loginForm.value.username) : username,
     password: password === null ? String(loginForm.value.password) : String(password),
-    rememberMe: rememberMe === null ? false : Boolean(rememberMe)
+    rememberMe: rememberMe === null ? false : Boolean(rememberMe),
+    userType: userType === null ? 'enterprise' : userType
   } as LoginData;
 };
 
@@ -231,6 +242,7 @@ onMounted(() => {
   height: 100%;
   background-image: url('../assets/images/login-background.jpg');
   background-size: cover;
+  position: relative;
 }
 
 .title-box {
@@ -249,11 +261,33 @@ onMounted(() => {
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   width: 400px;
   padding: 25px 25px 5px 25px;
   z-index: 1;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: background 0.6s ease;
+
+  .title {
+    color: #ffffff !important;
+    margin: 0px auto 30px auto;
+    text-align: center;
+  }
+
+  :deep(.el-input__wrapper) {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  :deep(.el-checkbox__label) {
+    color: #ffffff;
+  }
+
+  :deep(.link-type) {
+    color: #ffffff;
+  }
+
   .el-input {
     height: 40px;
     input {
@@ -301,5 +335,124 @@ onMounted(() => {
 .login-code-img {
   height: 40px;
   padding-left: 12px;
+}
+
+.role-tabs {
+  margin-bottom: 20px;
+
+  :deep(.el-tabs__header) {
+    margin: 0;
+  }
+
+  :deep(.el-tabs__nav-wrap::after) {
+    height: 1px;
+    background-color: #e4e7ed;
+  }
+
+  :deep(.el-tabs__item) {
+    font-size: 16px;
+    font-weight: 400;
+    color: #909399;
+    padding: 0 20px;
+    height: 45px;
+    line-height: 45px;
+    transition: all 0.3s ease;
+  }
+
+  :deep(.el-tabs__item:hover) {
+    color: #606266;
+  }
+
+  :deep(.el-tabs__item.is-active) {
+    color: #303133;
+    font-weight: 500;
+  }
+
+  :deep(.el-tabs__active-bar) {
+    height: 3px;
+    transition: all 0.3s ease;
+  }
+
+  :deep(.el-tabs__nav) {
+    float: none;
+  }
+}
+
+// 企业角色主题色 - 蓝紫色
+.login-enterprise {
+  .login-form {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .role-tabs :deep(.el-tabs__active-bar) {
+    background: #ffffff;
+  }
+
+  .role-tabs :deep(.el-tabs__item.is-active) {
+    color: #ffffff;
+  }
+
+  :deep(.el-button--primary) {
+    background: #ffffff;
+    color: #667eea;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// 个人角色主题色 - 粉红色
+.login-personal {
+  .login-form {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  .role-tabs :deep(.el-tabs__active-bar) {
+    background: #ffffff;
+  }
+
+  .role-tabs :deep(.el-tabs__item.is-active) {
+    color: #ffffff;
+  }
+
+  :deep(.el-button--primary) {
+    background: #ffffff;
+    color: #f5576c;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// 管理员角色主题色 - 青蓝色
+.login-admin {
+  .login-form {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+
+  .role-tabs :deep(.el-tabs__active-bar) {
+    background: #ffffff;
+  }
+
+  .role-tabs :deep(.el-tabs__item.is-active) {
+    color: #ffffff;
+  }
+
+  :deep(.el-button--primary) {
+    background: #ffffff;
+    color: #4facfe;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+  }
 }
 </style>
