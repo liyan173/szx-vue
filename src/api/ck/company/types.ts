@@ -64,6 +64,36 @@ export interface CompanyVO {
    */
   deliveryCenterInfo: string;
 
+  /**
+   * 认证状态
+   */
+  authenticationState?: string;
+
+  /**
+   * 法定代表人
+   */
+  juridicalPerson?: string;
+
+  /**
+   * 所属园区
+   */
+  gardenArea?: string;
+
+  /**
+   * 业务领域
+   */
+  linesOfBusiness?: string;
+
+  /**
+   * 会员
+   */
+  member?: string;
+
+  /**
+   * 所属区域
+   */
+  region?: string[] | string;
+
 }
 
 export interface CompanyForm extends BaseEntity {
@@ -132,6 +162,36 @@ export interface CompanyForm extends BaseEntity {
    */
   deliveryCenterInfo?: string;
 
+  /**
+   * 认证状态
+   */
+  authenticationState?: string;
+
+  /**
+   * 法定代表人
+   */
+  juridicalPerson?: string;
+
+  /**
+   * 所属园区
+   */
+  gardenArea?: string;
+
+  /**
+   * 业务领域
+   */
+  linesOfBusiness?: string;
+
+  /**
+   * 会员
+   */
+  member?: string;
+
+  /**
+   * 所属区域
+   */
+  region?: string[] | string;
+
 }
 
 export interface CompanyQuery extends PageQuery {
@@ -195,6 +255,16 @@ export interface CompanyQuery extends PageQuery {
    * 配送中心信息
    */
   deliveryCenterInfo?: string;
+
+  /**
+   * 认证状态
+   */
+  authenticationState?: string;
+
+  /**
+   * 会员
+   */
+  member?: string;
 
   /**
    * 日期范围参数
