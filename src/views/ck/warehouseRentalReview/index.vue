@@ -27,24 +27,12 @@
     </transition>
 
     <el-card shadow="never">
-      <template #header>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['ck:warehouseRentApply:add']">新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['ck:warehouseRentApply:edit']">修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['ck:warehouseRentApply:remove']">删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['ck:warehouseRentApply:export']">导出</el-button>
-          </el-col>
-          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
-        </el-row>
-      </template>
-
+      <!-- 标签页 -->
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+        <el-tab-pane label="待审批" name="pending"></el-tab-pane>
+        <el-tab-pane label="已审批" name="approved"></el-tab-pane>
+      </el-tabs>
+      
       <el-table v-loading="loading" border :data="warehouseRentApplyList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
@@ -137,7 +125,7 @@
   </div>
 </template>
 
-<script setup name="WarehouseRentApply" lang="ts">
+<script setup name="warehouseRentalReview" lang="ts">
 import { listCompany } from '@/api/ck/company';
 import { CompanyVO, CompanyQuery, CompanyForm } from '@/api/ck/company/types';
 import { listWarehouseRentApply, getWarehouseRentApply, delWarehouseRentApply, addWarehouseRentApply, updateWarehouseRentApply } from '@/api/ck/warehouseRentApply';
@@ -155,6 +143,7 @@ const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
+const activeTab = ref('pending'); // 当前激活的标签页
 
 const queryFormRef = ref<ElFormInstance>();
 const warehouseRentApplyFormRef = ref<ElFormInstance>();
@@ -195,6 +184,7 @@ const data = reactive<PageData<WarehouseRentApplyForm, WarehouseRentApplyQuery>>
     contactPhone: undefined,
     infoDesc: undefined,
     companyId: undefined,
+    authenticationState: undefined, // 添加审核状态查询参数
     params: {
     }
   },
@@ -249,10 +239,31 @@ const getCompanyList = async () => {
 /** 查询仓库出租服务申请列表 */
 const getList = async () => {
   loading.value = true;
-  const res = await listWarehouseRentApply(queryParams.value);
+  
+  // 创建查询参数的副本
+  const params = { ...queryParams.value };
+  
+  // 根据标签页设置审核状态
+  if (activeTab.value === 'pending') {
+    // 待审批：查询审批中状态 (字典值 "3")
+    params.authenticationState = '3';
+  } else if (activeTab.value === 'approved') {
+    // 已审批：查询通过状态 (字典值 "1")
+    params.authenticationState = '1';
+  }
+  
+  const res = await listWarehouseRentApply(params);
   warehouseRentApplyList.value = res.rows;
   total.value = res.total;
   loading.value = false;
+}
+
+/** 标签页切换 */
+const handleTabClick = (tab: any) => {
+  // 更新当前激活的标签页
+  activeTab.value = tab.props.name;
+  queryParams.value.pageNum = 1;
+  getList();
 }
 
 /** 取消按钮 */

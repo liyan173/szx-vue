@@ -40,17 +40,17 @@
         <el-table-column label="法定代表人" align="center" prop="juridicalPerson" />
         <el-table-column label="企业类型" align="center" prop="companyType">
           <template #default="scope">
-            <dict-tag :options="enterprise_nature_type" :value="scope.row.companyType"/>
+            <dict-tag v-if="scope.row.companyType" :options="enterprise_nature_type" :value="scope.row.companyType"/>
           </template>
         </el-table-column>
         <el-table-column label="业务领域" align="center" prop="linesOfBusiness">
           <template #default="scope">
-            <dict-tag :options="lines_of_business_type" :value="scope.row.linesOfBusiness"/>
+            <dict-tag v-if="scope.row.linesOfBusiness" :options="lines_of_business_type" :value="scope.row.linesOfBusiness"/>
           </template>
         </el-table-column>
         <el-table-column label="所属园区" align="center" prop="gardenArea">
           <template #default="scope">
-            <dict-tag :options="garden_type" :value="scope.row.gardenArea"/>
+            <dict-tag v-if="scope.row.gardenArea" :options="garden_type" :value="scope.row.gardenArea"/>
           </template>
         </el-table-column>
         <el-table-column label="申请时间" align="center" prop="createTime" width="180">
@@ -60,7 +60,7 @@
         </el-table-column>
         <el-table-column v-if="activeTab === 'approved'" label="审核状态" align="center" prop="authenticationState" width="100">
           <template #default="scope">
-            <dict-tag :options="authentication_state_type" :value="scope.row.authenticationState"/>
+            <dict-tag v-if="scope.row.authenticationState" :options="authentication_state_type" :value="scope.row.authenticationState"/>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" fixed="right" width="80">
@@ -79,19 +79,19 @@
         <el-descriptions-item label="统一社会信用代码">{{ form.creditCode }}</el-descriptions-item>
         <el-descriptions-item label="法定代表人">{{ form.juridicalPerson }}</el-descriptions-item>
         <el-descriptions-item label="企业性质">
-          <dict-tag :options="enterprise_nature_type" :value="form.companyType"/>
+          <dict-tag v-if="form.companyType" :options="enterprise_nature_type" :value="form.companyType"/>
         </el-descriptions-item>
         <el-descriptions-item label="企业规模">
-          <dict-tag :options="company_scale_type" :value="form.companyScale"/>
+          <dict-tag v-if="form.companyScale" :options="company_scale_type" :value="form.companyScale"/>
         </el-descriptions-item>
         <el-descriptions-item label="业务领域">
-          <dict-tag :options="lines_of_business_type" :value="form.linesOfBusiness"/>
+          <dict-tag v-if="form.linesOfBusiness" :options="lines_of_business_type" :value="form.linesOfBusiness"/>
         </el-descriptions-item>
         <el-descriptions-item label="所属园区">
-          <dict-tag :options="garden_type" :value="form.gardenArea"/>
+          <dict-tag v-if="form.gardenArea" :options="garden_type" :value="form.gardenArea"/>
         </el-descriptions-item>
         <el-descriptions-item label="业务类型">
-          <dict-tag :options="business_type" :value="form.businessType"/>
+          <dict-tag v-if="form.businessType" :options="business_type" :value="form.businessType"/>
         </el-descriptions-item>
         <el-descriptions-item label="所属区域">{{ getAreaName(form.region) }}</el-descriptions-item>
         <el-descriptions-item label="注册地址">{{ form.registerAddress }}</el-descriptions-item>
@@ -99,14 +99,14 @@
         <el-descriptions-item label="企业简介" :span="2">{{ form.companyIntro }}</el-descriptions-item>
         <el-descriptions-item label="车辆信息" :span="2">{{ form.vehicleInfo }}</el-descriptions-item>
         <el-descriptions-item label="主要配送品类">
-          <dict-tag :options="main_category_type" :value="form.mainCategory"/>
+          <dict-tag v-if="form.mainCategory" :options="main_category_type" :value="form.mainCategory"/>
         </el-descriptions-item>
         <el-descriptions-item label="主要配送区域">
-          <dict-tag :options="delivery_area_type" :value="form.deliveryArea"/>
+          <dict-tag v-if="form.deliveryArea" :options="delivery_area_type" :value="form.deliveryArea"/>
         </el-descriptions-item>
         <el-descriptions-item label="配送中心信息" :span="2">{{ form.deliveryCenterInfo }}</el-descriptions-item>
         <el-descriptions-item label="当前审核状态" :span="2">
-          <dict-tag :options="authentication_state_type" :value="form.authenticationState"/>
+          <dict-tag v-if="form.authenticationState" :options="authentication_state_type" :value="form.authenticationState"/>
         </el-descriptions-item>
       </el-descriptions>
 
@@ -292,24 +292,13 @@ const getList = async () => {
   if (activeTab.value === 'pending') {
     // 待审批：查询审批中状态 (字典值 "3")
     params.authenticationState = '3';
-  } else {
-    // 已审批：先查询通过状态 (字典值 "1")，然后再查询不通过状态 (字典值 "2")
-    // 这里先查询通过的
+    const res = await listCompany(proxy?.addDateRange(params, dateRange.value));
+    companyList.value = res.rows;
+    total.value = res.total;
+  } else if (activeTab.value === 'approved') {
+    // 已审批：查询通过状态 (字典值 "1")
     params.authenticationState = '1';
-  }
-
-  const res = await listCompany(proxy?.addDateRange(params, dateRange.value));
-
-  // 如果是已审批标签页，还需要获取不通过的记录
-  if (activeTab.value === 'approved') {
-    const params2 = { ...queryParams.value };
-    params2.authenticationState = '2';
-    const res2 = await listCompany(proxy?.addDateRange(params2, dateRange.value));
-
-    // 合并通过和不通过的记录
-    companyList.value = [...res.rows, ...res2.rows];
-    total.value = res.total + res2.total;
-  } else {
+    const res = await listCompany(proxy?.addDateRange(params, dateRange.value));
     companyList.value = res.rows;
     total.value = res.total;
   }
@@ -318,7 +307,9 @@ const getList = async () => {
 }
 
 /** 标签页切换 */
-const handleTabClick = () => {
+const handleTabClick = (tab: any) => {
+  // 更新当前激活的标签页
+  activeTab.value = tab.props.name;
   queryParams.value.pageNum = 1;
   getList();
 }
@@ -331,12 +322,6 @@ const cancel = () => {
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.value.pageNum = 1;
-  // 确保查询时包含当前标签页对应的状态
-  if (activeTab.value === 'pending') {
-    queryParams.value.authenticationState = '3';
-  } else {
-    queryParams.value.authenticationState = '1';
-  }
   getList();
 }
 

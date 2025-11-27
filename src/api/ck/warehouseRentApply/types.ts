@@ -54,6 +54,25 @@ export interface WarehouseRentApplyVO {
    */
   infoDesc: string;
 
+  /**
+   * 备注
+   */
+  remark: string;
+
+  /**
+   * 企业id
+   */
+  companyId: string | number;
+
+  /**
+   * 认证状态
+   0 通过
+   1 不通过
+   3 审核中
+   4 待提交
+   */
+  authenticationState: string;
+
 }
 
 export interface WarehouseRentApplyForm extends BaseEntity {
@@ -112,6 +131,25 @@ export interface WarehouseRentApplyForm extends BaseEntity {
    */
   infoDesc?: string;
 
+  /**
+   * 备注
+   */
+  remark?: string;
+
+  /**
+   * 企业id
+   */
+  companyId?: string | number;
+
+  /**
+   * 认证状态
+   0 通过
+   1 不通过
+   3 审核中
+   4 待提交
+   */
+  authenticationState?: string;
+
 }
 
 export interface WarehouseRentApplyQuery extends PageQuery {
@@ -167,7 +205,22 @@ export interface WarehouseRentApplyQuery extends PageQuery {
   infoDesc?: string;
 
   /**
+   * 企业id
+   */
+  companyId?: string | number;
+
+  /**
+   * 认证状态
+   0 通过
+   1 不通过
+   3 审核中
+   4 待提交
+   */
+  authenticationState?: string;
+
+  /**
    * 日期范围参数
    */
   params?: any;
+
 }

@@ -27,6 +27,11 @@
     </transition>
 
     <el-card shadow="never">
+      <!-- 标签页 -->
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+        <el-tab-pane label="待审批" name="pending"></el-tab-pane>
+        <el-tab-pane label="已审批" name="approved"></el-tab-pane>
+      </el-tabs>
       <el-table v-loading="loading" border :data="warehouseList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
 <!--        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />-->
@@ -132,7 +137,7 @@
           <dict-tag :options="authentication_state_type" :value="form.authenticationState"/>
         </el-descriptions-item>
       </el-descriptions>
-      
+
       <template #footer>
         <div class="dialog-footer" style="text-align: center;">
           <el-button :loading="buttonLoading" type="success" @click="handleApprove(1)" size="large">
@@ -152,6 +157,7 @@
 import { listWarehouse, getWarehouse, delWarehouse, addWarehouse, updateWarehouse } from '@/api/ck/warehouse';
 import { WarehouseVO, WarehouseQuery, WarehouseForm } from '@/api/ck/warehouse/types';
 import areaData from '@/utils/cnarea_2023.json';
+import { listCompany } from '@/api/ck/company';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { advantage_type, security_info_type, function_info_type, age_limit_type, warehouse_method_type, category_type, landt_ypes, area_type, outer_facilities_type, integrated_facilities_type, authentication_state_type} = toRefs<any>(proxy?.useDict('advantage_type', 'security_info_type', 'function_info_type', 'age_limit_type', 'warehouse_method_type', 'category_type', 'landt_ypes', 'area_type', 'outer_facilities_type', 'integrated_facilities_type','authentication_state_type'));
 
@@ -164,7 +170,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const dateRange = ref<[DateModelType, DateModelType]>(['', '']);
-
+const activeTab = ref('pending'); // 当前激活的标签页
 const queryFormRef = ref<ElFormInstance>();
 const warehouseFormRef = ref<ElFormInstance>();
 
@@ -343,14 +349,31 @@ const getAreaName = (regionCodes: string[] | string) => {
   const area = areaData.find(item => item.area_code === regionCodes);
   return area ? area.name : regionCodes;
 };
-
+const handleTabClick = (tab: any) => {
+  // 更新当前激活的标签页
+  activeTab.value = tab.props.name;
+  queryParams.value.pageNum = 1;
+  getList();
+}
 
 /** 查询仓库基础数据录入列表 */
 const getList = async () => {
   loading.value = true;
-  const res = await listWarehouse(proxy?.addDateRange(queryParams.value, dateRange.value));
+  // 创建查询参数的副本
+  const params = { ...queryParams.value };
+  // 根据标签页设置审核状态
+  if (activeTab.value === 'pending') {
+    // 待审批：查询审批中状态 (字典值 "3")
+    params.authenticationState = '3';
+  } else if (activeTab.value === 'approved') {
+    // 已审批：查询通过状态 (字典值 "1")
+    params.authenticationState = '1';
+  }
+
+  const res = await listWarehouse(proxy?.addDateRange(params, dateRange.value));
   warehouseList.value = res.rows;
   total.value = res.total;
+
   loading.value = false;
 }
 
@@ -407,14 +430,14 @@ const handleUpdate = async (row?: WarehouseVO) => {
 const handleApprove = async (status: number) => {
   try {
     await proxy?.$modal.confirm(`确认${status === 1 ? '通过' : '不通过'}该仓库的审核吗?`);
-    
+
     buttonLoading.value = true;
     // 提交完整的表单数据,只修改审核状态
     const updateData = {
       ...form.value,
       authenticationState: status.toString()
     };
-    
+
     await updateWarehouse(updateData).finally(() => buttonLoading.value = false);
     proxy?.$modal.msgSuccess('审核成功');
     dialog.visible = false;
