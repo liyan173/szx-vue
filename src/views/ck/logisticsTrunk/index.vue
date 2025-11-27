@@ -16,6 +16,16 @@
             <el-form-item label="单价(元/KG)" prop="pricePerKg">
               <el-input v-model="queryParams.pricePerKg" placeholder="请输入单价(元/KG)" clearable @keyup.enter="handleQuery" />
             </el-form-item>
+            <el-form-item label="所属企业" prop="companyId">
+              <el-select v-model="queryParams.companyId" placeholder="请选择所属企业" clearable filterable>
+                <el-option
+                  v-for="company in companyList"
+                  :key="company.id"
+                  :label="company.companyName"
+                  :value="company.id"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
               <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -69,6 +79,16 @@
     <!-- 添加或修改物流干线配送服务对话框 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
       <el-form ref="logisticsTrunkFormRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="所属企业" prop="companyId">
+          <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable>
+            <el-option
+              v-for="company in companyList"
+              :key="company.id"
+              :label="company.companyName"
+              :value="String(company.id)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="始发地" prop="origin">
           <el-input v-model="form.origin" placeholder="请输入始发地" />
         </el-form-item>
@@ -96,12 +116,15 @@
 </template>
 
 <script setup name="LogisticsTrunk" lang="ts">
+import { listCompany } from '@/api/ck/company';
+import { CompanyVO, CompanyQuery, CompanyForm } from '@/api/ck/company/types';
 import { listLogisticsTrunk, getLogisticsTrunk, delLogisticsTrunk, addLogisticsTrunk, updateLogisticsTrunk } from '@/api/ck/logisticsTrunk';
 import { LogisticsTrunkVO, LogisticsTrunkQuery, LogisticsTrunkForm } from '@/api/ck/logisticsTrunk/types';
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const { proxy, nextTick } = getCurrentInstance() as ComponentInternalInstance;
 
 const logisticsTrunkList = ref<LogisticsTrunkVO[]>([]);
+const companyList = ref<CompanyVO[]>([]);
 const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -127,6 +150,7 @@ const initFormData: LogisticsTrunkForm = {
   remark: undefined,
   companyId: undefined,
 }
+
 const data = reactive<PageData<LogisticsTrunkForm, LogisticsTrunkQuery>>({
   form: {...initFormData},
   queryParams: {
@@ -136,7 +160,7 @@ const data = reactive<PageData<LogisticsTrunkForm, LogisticsTrunkQuery>>({
     destination: undefined,
     minFee: undefined,
     pricePerKg: undefined,
-    companyId: undefined,
+    companyId: undefined, // 明确设置为undefined
     params: {
     }
   },
@@ -153,10 +177,20 @@ const data = reactive<PageData<LogisticsTrunkForm, LogisticsTrunkQuery>>({
     pricePerKg: [
       { required: true, message: "单价(元/KG)不能为空", trigger: "blur" }
     ],
+    // 恢复companyId的必填验证
+    companyId: [
+      { required: true, message: "请选择所属企业", trigger: "change" }
+    ]
   }
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+/** 查询企业信息列表 */
+const getCompanyList = async () => {
+  const res = await listCompany({ pageNum: 1, pageSize: 9999 });
+  companyList.value = res.rows;
+}
 
 /** 查询物流干线配送服务列表 */
 const getList = async () => {
@@ -199,8 +233,9 @@ const handleSelectionChange = (selection: LogisticsTrunkVO[]) => {
 }
 
 /** 新增按钮操作 */
-const handleAdd = () => {
+const handleAdd = async () => {
   reset();
+  await getCompanyList();
   dialog.visible = true;
   dialog.title = "添加物流干线配送服务";
 }
@@ -208,9 +243,19 @@ const handleAdd = () => {
 /** 修改按钮操作 */
 const handleUpdate = async (row?: LogisticsTrunkVO) => {
   reset();
-  const _id = row?.id || ids.value[0]
+  const _id = row?.id || ids.value[0];
   const res = await getLogisticsTrunk(_id);
-  Object.assign(form.value, res.data);
+  await getCompanyList();
+  
+  // 确保所有ID都是字符串类型，以保证与el-option的value类型匹配
+  if (res.data) {
+    const data = { ...res.data };
+    if (data.companyId !== undefined && data.companyId !== null) {
+      data.companyId = String(data.companyId);
+    }
+    Object.assign(form.value, data);
+  }
+  
   dialog.visible = true;
   dialog.title = "修改物流干线配送服务";
 }
