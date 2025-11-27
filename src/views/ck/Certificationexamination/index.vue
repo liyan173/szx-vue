@@ -126,19 +126,12 @@
 </template>
 
 <script setup name="Certificationexamination" lang="ts">
-import { listCompany, getCompany, delCompany, addCompany, updateCompany } from '@/api/ck/company';
+import { listCompany, getCompany, updateCompany } from '@/api/ck/company';
 import { CompanyVO, CompanyQuery, CompanyForm } from '@/api/ck/company/types';
 import areaData from '@/utils/cnarea_2023.json';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const { authentication_state_type, delivery_area_type, company_scale_type, main_category_type, garden_type, enterprise_nature_type, lines_of_business_type, business_type, member_type } = toRefs<any>(proxy?.useDict('authentication_state_type', 'delivery_area_type', 'company_scale_type', 'main_category_type', 'garden_type', 'enterprise_nature_type', 'lines_of_business_type', 'business_type', 'member_type'));
-
-// Cascader 配置
-const cascaderProps = {
-  value: 'area_code',
-  label: 'name',
-  children: 'children'
-};
+const { authentication_state_type, delivery_area_type, company_scale_type, main_category_type, garden_type, enterprise_nature_type, lines_of_business_type, business_type } = toRefs<any>(proxy?.useDict('authentication_state_type', 'delivery_area_type', 'company_scale_type', 'main_category_type', 'garden_type', 'enterprise_nature_type', 'lines_of_business_type', 'business_type'));
 
 // 构建三级联动数据结构
 const areaOptions = computed(() => {
@@ -185,7 +178,6 @@ const dateRange = ref<[DateModelType, DateModelType]>(['', '']);
 const activeTab = ref('pending'); // 当前激活的标签页
 
 const queryFormRef = ref<ElFormInstance>();
-const companyFormRef = ref<ElFormInstance>();
 
 const dialog = reactive<DialogOption>({
   visible: false,
@@ -333,19 +325,18 @@ const handleTabClick = () => {
 
 /** 取消按钮 */
 const cancel = () => {
-  reset();
   dialog.visible = false;
-}
-
-/** 表单重置 */
-const reset = () => {
-  form.value = {...initFormData};
-  companyFormRef.value?.resetFields();
 }
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.value.pageNum = 1;
+  // 确保查询时包含当前标签页对应的状态
+  if (activeTab.value === 'pending') {
+    queryParams.value.authenticationState = '3';
+  } else {
+    queryParams.value.authenticationState = '1';
+  }
   getList();
 }
 
@@ -363,16 +354,8 @@ const handleSelectionChange = (selection: CompanyVO[]) => {
   multiple.value = !selection.length;
 }
 
-/** 新增按钮操作 */
-const handleAdd = () => {
-  reset();
-  dialog.visible = true;
-  dialog.title = "添加企业信息";
-}
-
 /** 修改按钮操作 - 查看详情并审核 */
 const handleUpdate = async (row?: CompanyVO) => {
-  reset();
   const _id = row?.id || ids.value[0]
   const res = await getCompany(_id);
   Object.assign(form.value, res.data);
@@ -399,27 +382,6 @@ const handleApprove = async (status: number) => {
   } catch (error) {
     // 用户取消操作
   }
-}
-
-/** 提交按钮 */
-const submitForm = () => {
-  // 审核页面不需要此方法，使用 handleApprove 代替
-}
-
-/** 删除按钮操作 */
-const handleDelete = async (row?: CompanyVO) => {
-  const _ids = row?.id || ids.value;
-  await proxy?.$modal.confirm('是否确认删除企业信息编号为"' + _ids + '"的数据项？').finally(() => loading.value = false);
-  await delCompany(_ids);
-  proxy?.$modal.msgSuccess("删除成功");
-  await getList();
-}
-
-/** 导出按钮操作 */
-const handleExport = () => {
-  proxy?.download('ck/company/export', {
-    ...queryParams.value
-  }, `company_${new Date().getTime()}.xlsx`)
 }
 
 onMounted(() => {
