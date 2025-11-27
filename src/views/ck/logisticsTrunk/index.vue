@@ -125,6 +125,7 @@ const initFormData: LogisticsTrunkForm = {
   minFee: undefined,
   pricePerKg: undefined,
   remark: undefined,
+  companyId: undefined,
 }
 const data = reactive<PageData<LogisticsTrunkForm, LogisticsTrunkQuery>>({
   form: {...initFormData},
@@ -135,6 +136,7 @@ const data = reactive<PageData<LogisticsTrunkForm, LogisticsTrunkQuery>>({
     destination: undefined,
     minFee: undefined,
     pricePerKg: undefined,
+    companyId: undefined,
     params: {
     }
   },

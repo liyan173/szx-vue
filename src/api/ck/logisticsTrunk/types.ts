@@ -28,6 +28,10 @@ export interface LogisticsTrunkVO {
    * 备注信息
    */
   remark: string;
+  /**
+   * 企业id
+   */
+  companyId: string;
 
 }
 
@@ -61,7 +65,10 @@ export interface LogisticsTrunkForm extends BaseEntity {
    * 备注信息
    */
   remark?: string;
-
+  /**
+   * 企业id
+   */
+  companyId: string;
 }
 
 export interface LogisticsTrunkQuery extends PageQuery {
@@ -90,4 +97,8 @@ export interface LogisticsTrunkQuery extends PageQuery {
    * 日期范围参数
    */
   params?: any;
+  /**
+   * 企业id
+   */
+  companyId: string;
 }
