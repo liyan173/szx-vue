@@ -58,6 +58,11 @@
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
+        <el-table-column v-if="activeTab === 'approved'" label="审核状态" align="center" prop="authenticationState" width="100">
+          <template #default="scope">
+            <dict-tag :options="authentication_state_type" :value="scope.row.authenticationState"/>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" fixed="right" width="80">
           <template #default="scope">
             <el-button link type="primary" @click="handleUpdate(scope.row)">详情</el-button>
@@ -288,18 +293,35 @@ const getAreaName = (regionCodes: string[] | string) => {
 const getList = async () => {
   loading.value = true;
 
-  // 根据标签页强制设置审核状态
+  // 创建查询参数的副本
+  const params = { ...queryParams.value };
+
+  // 根据标签页设置审核状态
   if (activeTab.value === 'pending') {
-    // 待审批：强制查询审批中状态 (字典值 "3")
-    queryParams.value.authenticationState = '3';
+    // 待审批：查询审批中状态 (字典值 "3")
+    params.authenticationState = '3';
   } else {
-    // 已审批：强制查询通过状态 (字典值 "1")
-    queryParams.value.authenticationState = '1';
+    // 已审批：先查询通过状态 (字典值 "1")，然后再查询不通过状态 (字典值 "2")
+    // 这里先查询通过的
+    params.authenticationState = '1';
   }
 
-  const res = await listCompany(proxy?.addDateRange(queryParams.value, dateRange.value));
-  companyList.value = res.rows;
-  total.value = res.total;
+  const res = await listCompany(proxy?.addDateRange(params, dateRange.value));
+
+  // 如果是已审批标签页，还需要获取不通过的记录
+  if (activeTab.value === 'approved') {
+    const params2 = { ...queryParams.value };
+    params2.authenticationState = '2';
+    const res2 = await listCompany(proxy?.addDateRange(params2, dateRange.value));
+
+    // 合并通过和不通过的记录
+    companyList.value = [...res.rows, ...res2.rows];
+    total.value = res.total + res2.total;
+  } else {
+    companyList.value = res.rows;
+    total.value = res.total;
+  }
+
   loading.value = false;
 }
 
@@ -402,8 +424,7 @@ const handleExport = () => {
 
 onMounted(() => {
   dateRange.value = ['', ''];
-  // 初始化时设置为待审批状态
-  queryParams.value.authenticationState = '3';
+  // 初始化时默认显示待审批标签页
   getList();
 });
 </script>
