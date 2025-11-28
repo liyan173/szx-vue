@@ -3,24 +3,45 @@
     <transition :enter-active-class="proxy?.animate.searchAnimate.enter" :leave-active-class="proxy?.animate.searchAnimate.leave">
       <div v-show="showSearch" class="mb-[10px]">
         <el-card shadow="hover">
-          <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-            <el-form-item label="企业名称" prop="companyName">
-              <el-input v-model="queryParams.companyName" placeholder="请输入企业名称" clearable @keyup.enter="handleQuery" />
-            </el-form-item>
-            <el-form-item label="审核状态" prop="authenticationState">
-              <el-select v-model="queryParams.authenticationState" placeholder="请选择审核状态" clearable>
-                <el-option
-                  v-for="dict in authentication_state_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-              <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-            </el-form-item>
+          <el-form ref="queryFormRef" :model="queryParams" :inline="true" label-position="top">
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-form-item label="提交日期">
+                  <el-date-picker
+                    v-model="dateRange"
+                    value-format="YYYY-MM-DD"
+                    type="daterange"
+                    range-separator="~"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    style="width: 100%;"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="审批结果" prop="authenticationState">
+                  <el-select v-model="queryParams.authenticationState" placeholder="请选择" clearable style="width: 100%;">
+                    <el-option
+                      v-for="dict in authentication_state_type"
+                      :key="dict.value"
+                      :label="dict.label"
+                      :value="dict.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="企业名称" prop="companyName">
+                  <el-input v-model="queryParams.companyName" placeholder="请输入企业名称" clearable @keyup.enter="handleQuery" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label=" ">
+                  <el-button @click="resetQuery" icon="Refresh">重置</el-button>
+                  <el-button type="primary" @click="handleQuery" icon="Search">查询</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </el-card>
       </div>
@@ -30,16 +51,10 @@
       <template #header>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['ck:warehouseRentApply:add']">新增</el-button>
+            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['ck:warehouseRentApply:add']">新建</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['ck:warehouseRentApply:edit']">修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['ck:warehouseRentApply:remove']">删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['ck:warehouseRentApply:export']">导出</el-button>
+            <el-button plain icon="Upload" @click="handleImport" v-hasPermi="['ck:warehouseRentApply:import']">批量导入</el-button>
           </el-col>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
@@ -47,34 +62,26 @@
 
       <el-table v-loading="loading" border :data="warehouseRentApplyList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="主键ID" align="center" prop="id" v-if="true" />
-        <el-table-column label="申请标题" align="center" prop="title" />
         <el-table-column label="企业名称" align="center" prop="companyName" />
+        <el-table-column label="信息标题" align="center" prop="title" />
+        <el-table-column label="仓库名称" align="center" prop="warehouse.warehouseName" />
         <el-table-column label="可租面积(㎡)" align="center" prop="rentableArea" />
         <el-table-column label="起租面积(㎡)" align="center" prop="minRentArea" />
         <el-table-column label="价格(元/㎡·月)" align="center" prop="price" />
         <el-table-column label="物业单价(元/㎡·月)" align="center" prop="propertyPrice" />
-        <el-table-column label="自动下架日期" align="center" prop="autoOffDate" width="180">
+        <el-table-column label="自动下架日期" align="center" prop="autoOffDate" width="120">
           <template #default="scope">
             <span>{{ parseTime(scope.row.autoOffDate, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="联系人" align="center" prop="contactPerson" />
-        <el-table-column label="联系电话" align="center" prop="contactPhone" />
-        <el-table-column label="信息描述" align="center" prop="infoDesc" />
-        <el-table-column label="审核状态" align="center" prop="authenticationState">
+        <el-table-column label="提交时间" align="center" prop="createTime" width="160">
           <template #default="scope">
-            <dict-tag :options="authentication_state_type" :value="scope.row.authenticationState"/>
+            <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" fixed="right"  class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="right" width="80">
           <template #default="scope">
-            <el-tooltip content="修改" placement="top">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['ck:warehouseRentApply:edit']"></el-button>
-            </el-tooltip>
-            <el-tooltip content="删除" placement="top">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['ck:warehouseRentApply:remove']"></el-button>
-            </el-tooltip>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['ck:warehouseRentApply:edit']">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,50 +89,71 @@
       <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
     </el-card>
     <!-- 添加或修改仓库出租服务申请对话框 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
-      <el-form ref="warehouseRentApplyFormRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="所属企业" prop="companyId">
-          <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable>
-            <el-option
-                v-for="company in companyList"
-                :key="company.id"
-                :label="company.companyName"
-                :value="company.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="申请标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入申请标题" />
-        </el-form-item>
-        <el-form-item label="可租面积(㎡)" prop="rentableArea">
-          <el-input v-model="form.rentableArea" placeholder="请输入可租面积(㎡)" />
-        </el-form-item>
-        <el-form-item label="起租面积(㎡)" prop="minRentArea">
-          <el-input v-model="form.minRentArea" placeholder="请输入起租面积(㎡)" />
-        </el-form-item>
-        <el-form-item label="价格(元/㎡·月)" prop="price">
-          <el-input v-model="form.price" placeholder="请输入价格(元/㎡·月)" />
-        </el-form-item>
-        <el-form-item label="物业单价(元/㎡·月)" prop="propertyPrice">
-          <el-input v-model="form.propertyPrice" placeholder="请输入物业单价(元/㎡·月)" />
-        </el-form-item>
-        <el-form-item label="自动下架日期" prop="autoOffDate">
-          <el-date-picker clearable
-            v-model="form.autoOffDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择自动下架日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="联系人" prop="contactPerson">
-          <el-input v-model="form.contactPerson" placeholder="请输入联系人" />
-        </el-form-item>
-        <el-form-item label="联系电话" prop="contactPhone">
-          <el-input v-model="form.contactPhone" placeholder="请输入联系电话" />
-        </el-form-item>
-        <el-form-item label="信息描述" prop="infoDesc">
-            <el-input v-model="form.infoDesc" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="900px" append-to-body>
+      <el-form ref="warehouseRentApplyFormRef" :model="form" :rules="rules" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="所属企业" prop="companyId">
+              <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable style="width: 100%;">
+                <el-option
+                  v-for="company in companyList"
+                  :key="company.id"
+                  :label="company.companyName"
+                  :value="company.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库名称" prop="warehouseId">
+              <el-select v-model="form.warehouseId" placeholder="请选择仓库" filterable style="width: 100%;">
+                <el-option
+                  v-for="warehouse in warehouseList"
+                  :key="warehouse.id"
+                  :label="warehouse.warehouseName"
+                  :value="warehouse.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="信息标题" prop="title">
+              <el-input v-model="form.title" placeholder="请输入信息标题" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="可租面积(㎡)" prop="rentableArea">
+              <el-input v-model="form.rentableArea" placeholder="请输入可租面积(㎡)" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="起租面积(㎡)" prop="minRentArea">
+              <el-input v-model="form.minRentArea" placeholder="请输入起租面积(㎡)" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="价格(元/㎡·月)" prop="price">
+              <el-input v-model="form.price" placeholder="请输入价格(元/㎡·月)" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="物业单价(元/㎡·月)" prop="propertyPrice">
+              <el-input v-model="form.propertyPrice" placeholder="请输入物业单价(元/㎡·月)" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="自动下架日期" prop="autoOffDate">
+              <el-date-picker
+                clearable
+                v-model="form.autoOffDate"
+                type="datetime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="请选择自动下架日期"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -155,6 +183,8 @@ const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
+
+const dateRange = ref<[string, string]>(['', '']);
 
 const queryFormRef = ref<ElFormInstance>();
 const warehouseRentApplyFormRef = ref<ElFormInstance>();

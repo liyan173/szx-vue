@@ -90,168 +90,217 @@
       <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
     </el-card>
     <!-- 添加或修改仓库基础数据录入对话框 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body>
-      <el-form ref="warehouseFormRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="所属企业" prop="companyId">
-          <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable>
-            <el-option
-                v-for="company in companyList"
-                :key="company.id"
-                :label="company.companyName"
-                :value="company.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
-        </el-form-item>
-        <el-form-item label="占地(亩)" prop="areaMu">
-          <el-input v-model="form.areaMu" placeholder="请输入占地(亩)" />
-        </el-form-item>
-        <el-form-item label="土地属性" prop="landProperty">
-          <el-select v-model="form.landProperty" placeholder="请选择土地属性">
-            <el-option
-                v-for="dict in landt_ypes"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="使用年限" prop="useYears">
-          <el-select v-model="form.useYears" placeholder="请选择使用年限">
-            <el-option
-                v-for="dict in age_limit_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="楼栋数量" prop="buildingCount">
-          <el-input v-model="form.buildingCount" placeholder="请输入楼栋数量" />
-        </el-form-item>
-        <el-form-item label="容积率" prop="volumeRatio">
-          <el-input v-model="form.volumeRatio" placeholder="请输入容积率" />
-        </el-form-item>
-        <el-form-item label="层高" prop="floorHeight">
-          <el-input v-model="form.floorHeight" placeholder="请输入层高" />
-        </el-form-item>
-        <el-form-item label="仓库总面积" prop="totalArea">
-          <el-input v-model="form.totalArea" placeholder="请输入仓库总面积" />
-        </el-form-item>
-        <el-form-item label="仓库管理方式" prop="manageType">
-          <el-select v-model="form.manageType" placeholder="请选择仓库管理方式">
-            <el-option
-                v-for="dict in warehouse_method_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-<!--        <el-form-item label="所属区域" prop="region">-->
-<!--          <el-select v-model="form.region" placeholder="请选择所属区域">-->
-<!--            <el-option-->
-<!--                v-for="dict in area_type"-->
-<!--                :key="dict.value"-->
-<!--                :label="dict.label"-->
-<!--                :value="dict.value"-->
-<!--            ></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+    <el-dialog :title="dialog.title" v-model="dialog.visible" width="900px" append-to-body>
+      <el-form ref="warehouseFormRef" :model="form" :rules="rules" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-divider content-position="left">基本信息</el-divider>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所属企业" prop="companyId">
+              <el-select v-model="form.companyId" placeholder="请选择所属企业" filterable style="width: 100%;">
+                <el-option
+                  v-for="company in companyList"
+                  :key="company.id"
+                  :label="company.companyName"
+                  :value="company.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库名称" prop="warehouseName">
+              <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="占地(亩)" prop="areaMu">
+              <el-input v-model="form.areaMu" placeholder="请输入占地(亩)" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="土地属性" prop="landProperty">
+              <el-select v-model="form.landProperty" placeholder="请选择土地属性" style="width: 100%;">
+                <el-option
+                  v-for="dict in landt_ypes"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="使用年限" prop="useYears">
+              <el-select v-model="form.useYears" placeholder="请选择使用年限" style="width: 100%;">
+                <el-option
+                  v-for="dict in age_limit_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="楼栋数量" prop="buildingCount">
+              <el-input v-model="form.buildingCount" placeholder="请输入楼栋数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="容积率" prop="volumeRatio">
+              <el-input v-model="form.volumeRatio" placeholder="请输入容积率" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="层高" prop="floorHeight">
+              <el-input v-model="form.floorHeight" placeholder="请输入层高" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库总面积" prop="totalArea">
+              <el-input v-model="form.totalArea" placeholder="请输入仓库总面积" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库管理方式" prop="manageType">
+              <el-select v-model="form.manageType" placeholder="请选择仓库管理方式" style="width: 100%;">
+                <el-option
+                  v-for="dict in warehouse_method_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所属区域" prop="region">
+              <el-cascader
+                v-model="form.region"
+                :options="areaOptions"
+                :props="cascaderProps"
+                placeholder="请选择省/市/区"
+                clearable
+                filterable
+                style="width: 100%;"
+              ></el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="详细地址" prop="address">
+              <el-input v-model="form.address" placeholder="请输入详细地址" />
+            </el-form-item>
+          </el-col>
 
-        <el-form-item label="所属区域" prop="region">
-          <el-cascader
-            v-model="form.region"
-            :options="areaOptions"
-            :props="cascaderProps"
-            placeholder="请选择省/市/区"
-            clearable
-            filterable
-          ></el-cascader>
-        </el-form-item>
+          <el-col :span="24">
+            <el-divider content-position="left">配套设施</el-divider>
+          </el-col>
 
-        <el-form-item label="详细地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入详细地址" />
-        </el-form-item>
-        <el-form-item label="主要品类" prop="mainCategory">
-          <el-select v-model="form.mainCategory" placeholder="请选择主要品类">
-            <el-option
-                v-for="dict in category_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库内配套" prop="innerFacilities">
-          <el-select v-model="form.innerFacilities" placeholder="请选择仓库内配套">
-            <el-option
-                v-for="dict in integrated_facilities_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库外配套" prop="outerFacilities">
-          <el-select v-model="form.outerFacilities" placeholder="请选择仓库外配套">
-            <el-option
-                v-for="dict in outer_facilities_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="园区安保" prop="securityInfo">
-          <el-select v-model="form.securityInfo" placeholder="请选择园区安保">
-            <el-option
-                v-for="dict in security_info_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库优势" prop="advantage">
-          <el-select v-model="form.advantage" placeholder="请选择仓库优势">
-            <el-option
-                v-for="dict in advantage_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库功能" prop="functionInfo">
-          <el-select v-model="form.functionInfo" placeholder="请选择仓库功能">
-            <el-option
-                v-for="dict in function_info_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="仓库实景展示" prop="gallery">
-          <image-upload v-model="form.gallery"/>
-        </el-form-item>
-        <el-form-item label="消防等级证书" prop="fireLevel">
-          <image-upload v-model="form.fireLevel"/>
-        </el-form-item>
-        <el-form-item label="消防证书有效日期" prop="fireExpireDate">
-          <el-date-picker clearable
-            v-model="form.fireExpireDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择消防证书有效日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="各类仓库面积" prop="warehouseAreaInfo">
-            <el-input v-model="form.warehouseAreaInfo" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+          <el-col :span="12">
+            <el-form-item label="主要品类" prop="mainCategory">
+              <el-select v-model="form.mainCategory" placeholder="请选择主要品类" style="width: 100%;">
+                <el-option
+                  v-for="dict in category_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库内配套" prop="innerFacilities">
+              <el-select v-model="form.innerFacilities" placeholder="请选择仓库内配套" style="width: 100%;">
+                <el-option
+                  v-for="dict in integrated_facilities_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库外配套" prop="outerFacilities">
+              <el-select v-model="form.outerFacilities" placeholder="请选择仓库外配套" style="width: 100%;">
+                <el-option
+                  v-for="dict in outer_facilities_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="园区安保" prop="securityInfo">
+              <el-select v-model="form.securityInfo" placeholder="请选择园区安保" style="width: 100%;">
+                <el-option
+                  v-for="dict in security_info_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库优势" prop="advantage">
+              <el-select v-model="form.advantage" placeholder="请选择仓库优势" style="width: 100%;">
+                <el-option
+                  v-for="dict in advantage_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="仓库功能" prop="functionInfo">
+              <el-select v-model="form.functionInfo" placeholder="请选择仓库功能" style="width: 100%;">
+                <el-option
+                  v-for="dict in function_info_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-divider content-position="left">资质与面积</el-divider>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="仓库实景展示" prop="gallery">
+              <image-upload v-model="form.gallery"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="消防等级证书" prop="fireLevel">
+              <image-upload v-model="form.fireLevel"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="消防证书有效日期" prop="fireExpireDate">
+              <el-date-picker clearable
+                v-model="form.fireExpireDate"
+                type="datetime"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                placeholder="请选择消防证书有效日期"
+                style="width: 100%;">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="各类仓库面积" prop="warehouseAreaInfo">
+                <el-input v-model="form.warehouseAreaInfo" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
